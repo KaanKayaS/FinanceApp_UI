@@ -1,0 +1,25 @@
+<div class="payment-history-container">
+    <h2>Ödeme Geçmişim</h2>
+    
+    <div class="expense-list">
+        <div class="expense-item header">
+            <div class="name">Gider Adı</div>
+            <div class="amount">Tutar</div>
+            <div class="date">Ödeme Tarihi</div>
+        </div>
+        
+        @for (expense of expenses; track expense.name) {
+            <div class="expense-item">
+                <div class="name">{{ expense.name }}</div>
+                <div class="amount">{{ expense.amount | number:'1.2-2' }} ₺</div>
+                <div class="date">{{ expense.paidDate | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+        }
+
+        @if (expenses.length === 0) {
+            <div class="no-expenses">
+                Henüz hiç ödeme kaydı bulunmamaktadır.
+            </div>
+        }
+    </div>
+</div> 

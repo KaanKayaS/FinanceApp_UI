@@ -1,0 +1,15 @@
+<nav class="navbar">
+  <div class="navbar-content">
+    <button class="menu-toggle" (click)="toggleMobileMenu()" *ngIf="isMobileView">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <a class="brand" routerLink="/">FinanceApp</a>
+    <div class="nav-actions" [class.mobile-menu-open]="isMobileMenuOpen">
+      <div class="user-info" *ngIf="username">
+        <mat-icon class="user-icon">person</mat-icon>
+        <span class="user-name">Hoş geldiniz, {{ username }}</span>
+      </div>
+      <button class="btn-logout" (click)="logout()">Çıkış Yap</button>
+    </div>
+  </div>
+</nav> 

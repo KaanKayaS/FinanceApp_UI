@@ -1,0 +1,102 @@
+<div class="subscription-list-container">
+  <div class="header">
+    <h1>Aboneliklerim</h1>
+    <p>Aktif ve geçmiş aboneliklerinizi buradan yönetebilirsiniz</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <p>Abonelikler yükleniyor... Lütfen bekleyin.</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && memberships.length === 0" class="empty-state">
+    <div class="empty-content">
+      <div class="empty-icon">📱</div>
+      <h2>Henüz Aboneliğiniz Yok</h2>
+      <p>Favori dijital platformlarınıza abone olun ve ödemelerinizi kolayca yönetin</p>
+      <button class="btn-primary" (click)="goToCreateMembership()">
+        İlk Aboneliğinizi Oluşturun
+      </button>
+    </div>
+  </div>
+
+  <!-- Subscription List -->
+  <div *ngIf="!isLoading && memberships.length > 0" class="subscriptions-container">
+    
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+      <button class="btn-secondary" (click)="goToCreateMembership()">
+        ➕ Yeni Abonelik Ekle
+      </button>
+    </div>
+
+    <!-- Subscription Cards -->
+    <div class="subscription-list">
+      <div *ngFor="let membership of memberships; trackBy: trackByPlatform" 
+           class="subscription-card"
+           [class]="getStatusColor(membership)">
+        
+        <!-- Card Header -->
+        <div class="card-header">
+          <div class="platform-info">
+            <div class="platform-image-container">
+              <img [src]="getPlatformImage(membership)" 
+                   [alt]="membership.digitalPlatformName"
+                   class="platform-image"
+                   (error)="onImageError($event)">
+            </div>
+            <div class="platform-details">
+              <h3>{{ membership.digitalPlatformName }}</h3>
+              <span class="plan-name">{{ membership.subscriptionPlanName }}</span>
+            </div>
+          </div>
+          
+          <!-- Status Badge -->
+          <div class="status-badge" [class]="getStatusColor(membership)">
+            <span class="status-text">{{ getStatusText(membership) }}</span>
+          </div>
+        </div>
+
+        <!-- Card Content -->
+        <div class="card-content">
+          <div class="date-info">
+            <div class="date-item">
+              <span class="label">Başlangıç:</span>
+              <span class="value">{{ formatDate(membership.startDate) }}</span>
+            </div>
+            <div class="date-item">
+              <span class="label">Bitiş:</span>
+              <span class="value">{{ formatDate(membership.endDate) }}</span>
+            </div>
+          </div>
+
+          <!-- Special Message for Deleted Subscriptions -->
+          <div *ngIf="membership.isDeleted" class="deleted-message">
+            <div class="message-content">
+              <span class="warning-icon">⚠️</span>
+              <span>{{ getStatusText(membership) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Actions -->
+        <div class="card-actions" *ngIf="!membership.isDeleted">
+          <button class="btn-cancel" 
+                  (click)="cancelSubscription(membership)">
+            🗑️ Aboneliği İptal Et
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="bottom-actions">
+      <button class="btn-secondary" (click)="goHome()">
+        ⬅️ Ana Sayfaya Dön
+      </button>
+    </div>
+
+  </div>
+</div> 

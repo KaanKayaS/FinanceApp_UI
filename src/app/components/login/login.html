@@ -1,0 +1,69 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Giriş Yap</h1>
+      <p>Hesabınıza giriş yapın</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">E-posta Adresi</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          placeholder="ornek@email.com"
+          [class.error]="isFieldInvalid('email')"
+          autocomplete="email"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('email')">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">E-posta adresi gerekli</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Geçerli bir e-posta adresi girin</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <div class="password-field">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            id="password" 
+            formControlName="password"
+            placeholder="Şifrenizi girin"
+            [class.error]="isFieldInvalid('password')"
+            autocomplete="current-password"
+          />
+          <button 
+            type="button" 
+            class="password-toggle"
+            (click)="togglePassword()"
+          >
+            <span class="material-icons">{{showPassword ? 'visibility_off' : 'visibility'}}</span>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('password')">
+          <span *ngIf="loginForm.get('password')?.errors?.['required']">Şifre gerekli</span>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          class="login-btn"
+          [disabled]="loginForm.invalid || loading"
+        >
+          <span *ngIf="loading" class="spinner"></span>
+          {{loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}}
+        </button>
+      </div>
+      
+      <div class="error-message general-error" *ngIf="errorMessage">
+        {{errorMessage}}
+      </div>
+    </form>
+    
+    <div class="login-footer">
+      <p>Hesabınız yok mu? <a routerLink="/register">Kayıt Ol</a></p>
+    </div>
+  </div>
+</div>

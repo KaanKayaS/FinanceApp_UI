@@ -1,0 +1,122 @@
+<div class="add-card-container">
+  <div class="card-preview">
+    <div class="credit-card">
+      <div class="card-brand">
+        <i class="fab fa-cc-mastercard"></i>
+      </div>
+      <div class="card-chip">
+        <i class="fas fa-microchip"></i>
+      </div>
+      <div class="card-number">
+        {{ cardForm.get('cardNo')?.value || '**** **** **** ****' }}
+      </div>
+      <div class="card-info">
+        <div class="valid-thru">
+          <span>Valid Thru</span>
+          <span>{{ cardForm.get('validDate')?.value || 'MM/YY' }}</span>
+        </div>
+        <div class="card-holder">
+          <span>Card Holder</span>
+          <span>{{ cardForm.get('nameOnCard')?.value || 'AD SOYAD' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <form [formGroup]="cardForm" (ngSubmit)="onSubmit()" class="card-form">
+      <h2>Yeni Kart Ekle</h2>
+
+      <div class="form-group">
+        <label for="cardNo">Kart Numarası</label>
+        <input
+          id="cardNo"
+          type="text"
+          formControlName="cardNo"
+          placeholder="1234 5678 9012 3456"
+          maxlength="19"
+          (input)="formatCardNumber($event)"
+          autocomplete="off"
+          [class.ng-invalid]="cardForm.get('cardNo')?.invalid && cardForm.get('cardNo')?.touched"
+          [class.ng-valid]="cardForm.get('cardNo')?.valid && cardForm.get('cardNo')?.touched"
+        >
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ getErrorMessage('cardNo') }}
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="validDate">Son Kullanma Tarihi</label>
+          <input
+            id="validDate"
+            type="text"
+            formControlName="validDate"
+            placeholder="MM/YY"
+            maxlength="5"
+            (input)="formatValidDate($event)"
+            autocomplete="off"
+            [class.ng-invalid]="cardForm.get('validDate')?.invalid && cardForm.get('validDate')?.touched"
+            [class.ng-valid]="cardForm.get('validDate')?.valid && cardForm.get('validDate')?.touched"
+          >
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ getErrorMessage('validDate') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cvv">CVV</label>
+          <input
+            id="cvv"
+            type="password"
+            formControlName="cvv"
+            placeholder="123"
+            maxlength="3"
+            autocomplete="off"
+            [class.ng-invalid]="cardForm.get('cvv')?.invalid && cardForm.get('cvv')?.touched"
+            [class.ng-valid]="cardForm.get('cvv')?.valid && cardForm.get('cvv')?.touched"
+          >
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ getErrorMessage('cvv') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="nameOnCard">Kart Üzerindeki İsim</label>
+        <input
+          id="nameOnCard"
+          type="text"
+          formControlName="nameOnCard"
+          placeholder="Ad Soyad"
+          autocomplete="off"
+          [class.ng-invalid]="cardForm.get('nameOnCard')?.invalid && cardForm.get('nameOnCard')?.touched"
+          [class.ng-valid]="cardForm.get('nameOnCard')?.valid && cardForm.get('nameOnCard')?.touched"
+        >
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ getErrorMessage('nameOnCard') }}
+        </div>
+      </div>
+
+      <div class="api-error" *ngIf="showError">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" routerLink="/cards">
+          <i class="fas fa-times"></i>
+          İptal
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="cardForm.invalid || isLoading">
+          <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+          {{ isLoading ? 'Ekleniyor...' : 'Kartı Ekle' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

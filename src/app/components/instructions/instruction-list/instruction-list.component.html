@@ -1,0 +1,130 @@
+<div class="instruction-list-container">
+    <div class="header">
+        <h2>Talimatlarım</h2>
+        <p>Oluşturduğunuz ödeme talimatlarını buradan takip edebilirsiniz</p>
+        <button class="btn btn-primary" routerLink="/instructions/create">
+            <i class="fas fa-plus"></i>
+            Yeni Talimat Oluştur
+        </button>
+    </div>
+
+    <!-- Mesaj Alanları -->
+    <div class="message error" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="isLoading">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Talimatlar yükleniyor...</p>
+        </div>
+    </div>
+
+    <!-- Talimat Listesi -->
+    <div class="instruction-grid" *ngIf="!isLoading">
+        <div class="instruction-card" *ngFor="let instruction of instructions" 
+             [class.paid]="instruction.isPaid"
+             [class.overdue]="isOverdue(instruction)">
+            
+            <div class="card-header">
+                <div class="title-section">
+                    <h3>{{ instruction.title }}</h3>
+                    <span class="group-badge" *ngIf="instruction.groupId" title="Grup Talimatı">
+                        <i class="fas fa-users"></i>
+                        Grup
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="amount-section">
+                    <div class="amount">{{ formatCurrency(instruction.amount) }}</div>
+                    <div class="date" [class.overdue]="isOverdue(instruction)">
+                        <i class="fas fa-calendar-alt"></i>
+                        {{ formatDate(instruction.scheduledDate) }}
+                    </div>
+                </div>
+
+                <div class="description-section" *ngIf="instruction.description">
+                    <div class="description-label">
+                        <i class="fas fa-comment"></i>
+                        Açıklama:
+                    </div>
+                    <div class="description-text">{{ instruction.description }}</div>
+                </div>
+            </div>
+
+            <div class="card-actions" *ngIf="!instruction.isPaid">
+                <button class="btn btn-primary btn-sm" (click)="editInstruction(instruction)">
+                    <i class="fas fa-edit"></i>
+                    Düzenle
+                </button>
+                <button class="btn btn-success btn-sm" (click)="markAsPaid(instruction)">
+                    <i class="fas fa-check"></i>
+                    Ödendi Olarak İşaretle
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="deleteInstruction(instruction)">
+                    <i class="fas fa-trash"></i>
+                    Sil
+                </button>
+            </div>
+        </div>
+
+        <!-- Boş Liste Durumu -->
+        <div class="empty-state" *ngIf="instructions.length === 0">
+            <div class="empty-icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <h3>Henüz talimat bulunmuyor</h3>
+            <p>İlk ödeme talimatınızı oluşturmak için aşağıdaki butona tıklayın</p>
+            <button class="btn btn-primary" routerLink="/instructions/create">
+                <i class="fas fa-plus"></i>
+                Talimat Oluştur
+            </button>
+        </div>
+    </div>
+
+    <!-- İstatistikler -->
+    <div class="stats-container" *ngIf="instructions.length > 0">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ getTotalCount() }}</div>
+                <div class="stat-label">Toplam Talimat</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ getPendingCount() }}</div>
+                <div class="stat-label">Bekleyen Talimat</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ getPaidCount() }}</div>
+                <div class="stat-label">Tamamlanan</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-lira-sign"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">{{ formatCurrency(getTotalAmount()) }}</div>
+                <div class="stat-label">Toplam Tutar</div>
+            </div>
+        </div>
+    </div>
+</div> 

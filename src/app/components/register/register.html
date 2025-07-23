@@ -1,0 +1,115 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Kayıt Ol</h1>
+      <p>Yeni hesabınızı oluşturun</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Full Name Field -->
+      <div class="form-group">
+        <label for="fullName">Kullanıcı Adı</label>
+        <input
+          type="text"
+          id="fullName"
+          formControlName="fullName"
+          placeholder="Kullanıcı adınızı girin"
+          [class.error]="isFieldInvalid('fullName')"
+          autocomplete="name"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('fullName')">
+          <span *ngIf="registerForm.get('fullName')?.errors?.['required']">Ad soyad gerekli</span>
+          <span *ngIf="registerForm.get('fullName')?.errors?.['minlength']">Ad soyad en az 3 karakter olmalı</span>
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">E-posta Adresi</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="ornek@email.com"
+          [class.error]="isFieldInvalid('email')"
+          autocomplete="email"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('email')">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">E-posta adresi gerekli</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Geçerli bir e-posta adresi girin</span>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <div class="password-field">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            placeholder="Şifrenizi oluşturun"
+            [class.error]="isFieldInvalid('password')"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+          >
+            <span class="material-icons">{{showPassword ? 'visibility_off' : 'visibility'}}</span>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('password')">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Şifre gerekli</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Şifre en az 6 karakter olmalı</span>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="form-group">
+        <label for="confirmPassword">Şifre Tekrar</label>
+        <div class="password-field">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            placeholder="Şifrenizi tekrar girin"
+            [class.error]="isFieldInvalid('confirmPassword')"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="toggleConfirmPassword()"
+          >
+            <span class="material-icons">{{showConfirmPassword ? 'visibility_off' : 'visibility'}}</span>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="isFieldInvalid('confirmPassword')">
+          <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Şifre tekrarı gerekli</span>
+          <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Şifreler eşleşmiyor</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="register-btn"
+          [disabled]="registerForm.invalid || loading"
+        >
+          <span *ngIf="loading" class="spinner"></span>
+          {{loading ? 'Kayıt oluşturuluyor...' : 'Kayıt Ol'}}
+        </button>
+      </div>
+
+      <div class="error-message general-error" *ngIf="errorMessage">
+        {{errorMessage}}
+      </div>
+    </form>
+
+    <div class="register-footer">
+      <p>Zaten hesabınız var mı? <a routerLink="/login">Giriş Yap</a></p>
+    </div>
+  </div>
+</div>

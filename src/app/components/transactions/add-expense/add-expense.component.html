@@ -1,0 +1,95 @@
+<div class="add-expense-container">
+    <div class="header">
+        <h2>Gider Ekle</h2>
+        <p>Yeni manuel gider ekleyebilirsiniz</p>
+    </div>
+
+    <!-- Mesaj Alanları -->
+    <div class="message success" *ngIf="successMessage">
+        <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+    <div class="message error" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle"></i>
+        <div>
+            <div *ngFor="let error of errorMessages">{{ error }}</div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+        <form [formGroup]="expenseForm" (ngSubmit)="addExpense()">
+            <div class="form-group">
+                <label for="expenseName">
+                    <i class="fas fa-tag"></i>
+                    Gider Adı *
+                </label>
+                <input 
+                    type="text" 
+                    id="expenseName"
+                    formControlName="name"
+                    class="form-control"
+                    placeholder="Gider adını girin (örn: Elektrik Faturası)"
+                    [class.invalid]="expenseForm.get('name')?.invalid && expenseForm.get('name')?.touched"
+                >
+                <div class="error-text" *ngIf="expenseForm.get('name')?.invalid && expenseForm.get('name')?.touched">
+                    <span *ngIf="expenseForm.get('name')?.errors?.['required']">Gider adı zorunludur</span>
+                    <span *ngIf="expenseForm.get('name')?.errors?.['minlength']">Gider adı en az 2 karakter olmalıdır</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="expenseAmount">
+                    <i class="fas fa-lira-sign"></i>
+                    Tutar (₺) *
+                </label>
+                <input 
+                    type="number" 
+                    id="expenseAmount"
+                    formControlName="amount"
+                    class="form-control"
+                    step="0.01"
+                    placeholder="Tutarı girin"
+                    [class.invalid]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched"
+                >
+                <div class="error-text" *ngIf="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched">
+                    <span *ngIf="expenseForm.get('amount')?.errors?.['required']">Tutar zorunludur</span>
+                    <span *ngIf="expenseForm.get('amount')?.errors?.['min']">Tutar 0'dan büyük olmalıdır</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button 
+                    type="button" 
+                    class="btn btn-secondary"
+                    (click)="resetForm()"
+                >
+                    <i class="fas fa-undo"></i>
+                    Temizle
+                </button>
+                <button 
+                    type="submit" 
+                    class="btn btn-primary"
+                    [disabled]="expenseForm.invalid || isSubmitting"
+                >
+                    <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
+                    <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+                    <span *ngIf="!isSubmitting">Gider Ekle</span>
+                    <span *ngIf="isSubmitting">Ekleniyor...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bilgilendirme -->
+    <div class="info-card">
+        <div class="info-header">
+            <i class="fas fa-info-circle"></i>
+            <h3>Bilgi</h3>
+        </div>
+        <ul class="info-list">
+            <li>Eklediğiniz giderler Gider ajandası sayfasında görüntülenecektir</li>
+            <li>Aynı isimde gider eklemeye çalışırsanız uyarı alacaksınız</li>
+            <li>Eklenen giderleri daha sonra düzenleyebilir veya silebilirsiniz</li>
+        </ul>
+    </div>
+</div> 

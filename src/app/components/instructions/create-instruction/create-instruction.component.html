@@ -1,0 +1,184 @@
+<div class="create-instruction-container">
+    <div class="header">
+        <h2>Talimat Oluştur</h2>
+        <p>Yeni ödeme talimatı oluşturabilirsiniz</p>
+    </div>
+
+    <!-- Mesaj Alanları -->
+    <div class="message success" *ngIf="successMessage">
+        <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+    <div class="message error" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle"></i>
+        <div>
+            <div *ngFor="let error of errorMessages">{{ error }}</div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+        <form [formGroup]="instructionForm" (ngSubmit)="createInstruction()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="instructionTitle">
+                        <i class="fas fa-file-alt"></i>
+                        Talimat Başlığı *
+                    </label>
+                    <input 
+                        type="text" 
+                        id="instructionTitle"
+                        formControlName="title"
+                        class="form-control"
+                        placeholder="Talimat başlığını girin (örn: Elektrik Faturası Ödemesi)"
+                        [class.invalid]="instructionForm.get('title')?.invalid && instructionForm.get('title')?.touched"
+                    >
+                    <div class="error-text" *ngIf="instructionForm.get('title')?.invalid && instructionForm.get('title')?.touched">
+                        <span *ngIf="instructionForm.get('title')?.errors?.['required']">Talimat başlığı zorunludur</span>
+                        <span *ngIf="instructionForm.get('title')?.errors?.['minlength']">Başlık en az 3 karakter olmalıdır</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="instructionAmount">
+                        <i class="fas fa-lira-sign"></i>
+                        Tutar (₺) *
+                    </label>
+                    <input 
+                        type="number" 
+                        id="instructionAmount"
+                        formControlName="amount"
+                        class="form-control"
+                        step="0.01"
+                        placeholder="Tutarı girin"
+                        [class.invalid]="instructionForm.get('amount')?.invalid && instructionForm.get('amount')?.touched"
+                    >
+                    <div class="error-text" *ngIf="instructionForm.get('amount')?.invalid && instructionForm.get('amount')?.touched">
+                        <span *ngIf="instructionForm.get('amount')?.errors?.['required']">Tutar zorunludur</span>
+                        <span *ngIf="instructionForm.get('amount')?.errors?.['min']">Tutar 0'dan büyük olmalıdır</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="scheduledDate">
+                    <i class="fas fa-calendar-alt"></i>
+                    Zamanlanmış Tarih *
+                </label>
+                <input 
+                    type="datetime-local" 
+                    id="scheduledDate"
+                    formControlName="scheduledDate"
+                    class="form-control"
+                    [class.invalid]="instructionForm.get('scheduledDate')?.invalid && instructionForm.get('scheduledDate')?.touched"
+                >
+                <div class="error-text" *ngIf="instructionForm.get('scheduledDate')?.invalid && instructionForm.get('scheduledDate')?.touched">
+                    <span *ngIf="instructionForm.get('scheduledDate')?.errors?.['required']">Zamanlanmış tarih zorunludur</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">
+                    <i class="fas fa-comment"></i>
+                    Açıklama (İsteğe bağlı)
+                </label>
+                <textarea 
+                    id="description"
+                    formControlName="description"
+                    class="form-control textarea"
+                    rows="4"
+                    placeholder="Talimat hakkında açıklama yazabilirsiniz (isteğe bağlı)"
+                ></textarea>
+            </div>
+
+            <!-- Aylık Talimat Seçeneği -->
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input 
+                            type="checkbox" 
+                            formControlName="monthlyInstruction"
+                            class="checkbox-input"
+                        >
+                        <span class="checkbox-custom"></span>
+                        <i class="fas fa-calendar-week checkbox-icon"></i>
+                        Aylık Tekrarlanan Talimat
+                    </label>
+                    <p class="checkbox-description">
+                        Bu seçeneği işaretlerseniz, belirlediğiniz sayıda aylık talimat otomatik olarak oluşturulur.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Talimat Sayısı (Aylık talimat seçildiğinde görünür) -->
+            <div class="form-group" *ngIf="isMonthlyInstructionChecked">
+                <label for="instructionTime">
+                    <i class="fas fa-repeat"></i>
+                    Talimat Sayısı *
+                </label>
+                <select 
+                    id="instructionTime"
+                    formControlName="instructionTime"
+                    class="form-control"
+                    [class.invalid]="instructionForm.get('instructionTime')?.invalid && instructionForm.get('instructionTime')?.touched"
+                >
+                    <option value="1">1 Ay</option>
+                    <option value="2">2 Ay</option>
+                    <option value="3">3 Ay</option>
+                    <option value="4">4 Ay</option>
+                    <option value="5">5 Ay</option>
+                    <option value="6">6 Ay</option>
+                    <option value="7">7 Ay</option>
+                    <option value="8">8 Ay</option>
+                    <option value="9">9 Ay</option>
+                    <option value="10">10 Ay</option>
+                    <option value="11">11 Ay</option>
+                    <option value="12">12 Ay</option>
+                </select>
+                <div class="instruction-info">
+                    <i class="fas fa-info-circle"></i>
+                    Seçilen tarihe bağlı olarak, belirlediğiniz sayıda aylık talimat oluşturulacaktır.
+                </div>
+                <div class="error-text" *ngIf="instructionForm.get('instructionTime')?.invalid && instructionForm.get('instructionTime')?.touched">
+                    <span *ngIf="instructionForm.get('instructionTime')?.errors?.['min']">En az 1 ay seçmelisiniz</span>
+                    <span *ngIf="instructionForm.get('instructionTime')?.errors?.['max']">En fazla 12 ay seçebilirsiniz</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button 
+                    type="button" 
+                    class="btn btn-secondary"
+                    (click)="resetForm()"
+                >
+                    <i class="fas fa-undo"></i>
+                    Temizle
+                </button>
+                <button 
+                    type="submit" 
+                    class="btn btn-primary"
+                    [disabled]="instructionForm.invalid || isSubmitting"
+                >
+                    <i class="fas fa-plus" *ngIf="!isSubmitting"></i>
+                    <i class="fas fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+                    <span *ngIf="!isSubmitting">Talimat Oluştur</span>
+                    <span *ngIf="isSubmitting">Oluşturuluyor...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bilgilendirme -->
+    <div class="info-card">
+        <div class="info-header">
+            <i class="fas fa-info-circle"></i>
+            <h3>Talimat Hakkında</h3>
+        </div>
+        <ul class="info-list">
+            <li>Talimat başlığı ve tutarı zorunlu alanlardır</li>
+            <li>Açıklama alanı isteğe bağlıdır ve talimat detayları için kullanılabilir</li>
+            <li>Aylık tekrarlanan talimat seçeneği ile otomatik talimatlar oluşturabilirsiniz</li>
+            <li>Aylık talimat seçildiğinde, belirlenen tarihten itibaren aylık aralıklarla talimatlar oluşturulur</li>
+            <li>Oluşturulan talimatları talimatlarım sayfasından takip edebilirsiniz</li>
+        </ul>
+    </div>
+</div> 

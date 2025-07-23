@@ -1,0 +1,78 @@
+<div class="add-balance-container">
+  <div class="header">
+    <button class="back-button" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+      <span>Geri Dön</span>
+    </button>
+    <h2>Bakiye Yükle</h2>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Yükleniyor...</span>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ error }}</span>
+  </div>
+
+  <div class="success-message" *ngIf="success">
+    <i class="fas fa-check-circle"></i>
+    <span>{{ success }}</span>
+  </div>
+
+  <form [formGroup]="balanceForm" (ngSubmit)="onSubmit()" class="balance-form" *ngIf="!loading">
+    <div class="form-section">
+      <label>Kart Seçin</label>
+      <div class="cards-list">
+        <div *ngFor="let card of cards" 
+             class="card-option" 
+             [class.selected]="balanceForm.get('cardId')?.value === card.cardId"
+             (click)="balanceForm.get('cardId')?.setValue(card.cardId)">
+          <div class="card-info">
+            <div class="card-number">
+              <i class="fas fa-credit-card"></i>
+              <span>{{ formatCardNumber(card.cardNo) }}</span>
+            </div>
+            <div class="card-details">
+              <span class="name">{{ card.nameOnCard }}</span>
+              <span class="valid">{{ card.validDate }}</span>
+            </div>
+          </div>
+          <div class="card-balance">
+            Mevcut Bakiye: <span>{{ card.balance | number:'1.2-2' }} ₺</span>
+          </div>
+        </div>
+      </div>
+      <div class="error-text" *ngIf="balanceForm.get('cardId')?.touched && balanceForm.get('cardId')?.invalid">
+        Lütfen bir kart seçin
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label for="balance">Yüklenecek Tutar</label>
+      <div class="balance-input">
+        <input type="number" 
+               id="balance" 
+               formControlName="balance" 
+               placeholder="0.00"
+               [min]="1"
+               [max]="100000">
+        <span class="currency">₺</span>
+      </div>
+      <div class="error-text" *ngIf="balanceForm.get('balance')?.touched && balanceForm.get('balance')?.errors">
+        <span *ngIf="balanceForm.get('balance')?.errors?.['required']">Lütfen yüklenecek tutarı girin</span>
+        <span *ngIf="balanceForm.get('balance')?.errors?.['min']">En az 1₺ yükleyebilirsiniz</span>
+        <span *ngIf="balanceForm.get('balance')?.errors?.['max']">En fazla 100.000₺ yükleyebilirsiniz</span>
+      </div>
+    </div>
+
+    <button type="submit" 
+            class="submit-button" 
+            [disabled]="balanceForm.invalid || loading">
+      <i class="fas fa-plus-circle"></i>
+      Bakiye Yükle
+    </button>
+  </form>
+</div> 

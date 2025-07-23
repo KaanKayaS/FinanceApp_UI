@@ -1,0 +1,382 @@
+.subscription-list-container {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 64px);
+
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+
+    h1 {
+      font-size: 32px;
+      color: #2c3e50;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+    }
+
+    p {
+      color: #6c757d;
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+
+  .loading-section {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 8px;
+    margin: 20px 0;
+    
+    p {
+      font-size: 18px;
+      color: #6c757d;
+    }
+  }
+
+  // Empty State
+  .empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+
+    .empty-content {
+      text-align: center;
+      background: white;
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+      .empty-icon {
+        font-size: 64px;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        color: #2c3e50;
+        font-size: 28px;
+        margin: 0 0 16px 0;
+        font-weight: 600;
+      }
+
+      p {
+        color: #6c757d;
+        font-size: 16px;
+        margin: 0 0 32px 0;
+        max-width: 400px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+
+  // Main Content
+  .subscriptions-container {
+    .actions-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 24px;
+
+      .btn-secondary {
+        background: white;
+        color: #4f46e5;
+        border: 2px solid #4f46e5;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #4f46e5;
+          color: white;
+        }
+      }
+    }
+
+    .subscription-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .subscription-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-left: 4px solid #28a745;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        // Status-based colors
+        &.active {
+          border-left-color: #28a745;
+        }
+
+        &.warning {
+          border-left-color: #ffc107;
+        }
+
+        &.expired {
+          border-left-color: #dc3545;
+        }
+
+        &.deleted {
+          border-left-color: #6c757d;
+          opacity: 0.8;
+        }
+
+        .card-header {
+          padding: 24px 24px 16px 24px;
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+
+          .platform-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            .platform-image-container {
+              width: 64px;
+              height: 64px;
+              flex-shrink: 0;
+
+              .platform-image {
+                width: 64px;
+                height: 64px;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px solid #e1e5e9;
+              }
+            }
+
+            .platform-details {
+              h3 {
+                color: #2c3e50;
+                font-size: 22px;
+                margin: 0 0 4px 0;
+                font-weight: 600;
+              }
+
+              .plan-name {
+                color: #6c757d;
+                font-size: 14px;
+                background: #f8f9fa;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-weight: 500;
+              }
+            }
+          }
+
+          .status-badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 120px;
+
+            &.active {
+              background: #d4edda;
+              color: #155724;
+            }
+
+            &.warning {
+              background: #fff3cd;
+              color: #856404;
+            }
+
+            &.expired {
+              background: #f8d7da;
+              color: #721c24;
+            }
+
+            &.deleted {
+              background: #e2e3e5;
+              color: #383d41;
+            }
+
+            .status-text {
+              display: block;
+            }
+          }
+        }
+
+        .card-content {
+          padding: 0 24px 16px 24px;
+
+          .date-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+
+            .date-item {
+              .label {
+                display: block;
+                color: #6c757d;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+              }
+
+              .value {
+                color: #2c3e50;
+                font-size: 14px;
+                font-weight: 500;
+              }
+            }
+          }
+
+          .deleted-message {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+
+            .message-content {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              color: #6c757d;
+              font-size: 14px;
+              font-weight: 500;
+
+              .warning-icon {
+                font-size: 16px;
+              }
+            }
+          }
+        }
+
+        .card-actions {
+          padding: 16px 24px 24px 24px;
+          border-top: 1px solid #e9ecef;
+          background: #f8f9fa;
+
+          .btn-cancel {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background: #c82333;
+            }
+          }
+        }
+      }
+    }
+
+    .bottom-actions {
+      text-align: center;
+      margin-top: 32px;
+
+      .btn-secondary {
+        background: white;
+        color: #6c757d;
+        border: 2px solid #6c757d;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #6c757d;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .subscription-list-container {
+    padding: 16px;
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .subscriptions-container {
+      .subscription-list {
+        .subscription-card {
+          .card-header {
+            padding: 16px;
+            flex-direction: column;
+            gap: 16px;
+            align-items: stretch;
+
+            .platform-info {
+              .platform-image-container {
+                width: 48px;
+                height: 48px;
+
+                .platform-image {
+                  width: 48px;
+                  height: 48px;
+                }
+              }
+
+              .platform-details h3 {
+                font-size: 18px;
+              }
+            }
+
+            .status-badge {
+              align-self: flex-start;
+              min-width: auto;
+            }
+          }
+
+          .card-content {
+            padding: 0 16px 16px 16px;
+
+            .date-info {
+              grid-template-columns: 1fr;
+              gap: 12px;
+            }
+          }
+
+          .card-actions {
+            padding: 16px;
+          }
+        }
+      }
+    }
+  }
+} 

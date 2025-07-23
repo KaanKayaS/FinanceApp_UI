@@ -1,0 +1,101 @@
+<div class="add-card-container">
+  <div class="card-preview">
+    <div class="credit-card">
+      <div class="card-chip">
+        <i class="fas fa-microchip"></i>
+      </div>
+      <div class="card-number">
+        {{ cardForm.get('cardNo')?.value || '**** **** **** ****' }}
+      </div>
+      <div class="card-info">
+        <div class="valid-thru">
+          <span>Valid Thru</span>
+          <span>{{ cardForm.get('validDate')?.value || 'MM/YY' }}</span>
+        </div>
+        <div class="card-holder">
+          <span>Card Holder</span>
+          <span>{{ cardForm.get('nameOnCard')?.value || 'AD SOYAD' }}</span>
+        </div>
+      </div>
+      <div class="card-brand">
+        <i class="fab fa-cc-mastercard"></i>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="cardForm" (ngSubmit)="onSubmit()" class="card-form">
+    <h2>Yeni Kart Ekle</h2>
+
+    <div class="form-group">
+      <label for="cardNo">Kart Numarası</label>
+      <input
+        id="cardNo"
+        type="text"
+        formControlName="cardNo"
+        placeholder="1234 5678 9012 3456"
+        maxlength="19"
+        (input)="formatCardNumber($event)"
+      >
+      <div class="error-message" *ngIf="cardForm.get('cardNo')?.touched">
+        {{ getErrorMessage('cardNo') }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="validDate">Son Kullanma Tarihi</label>
+        <input
+          id="validDate"
+          type="text"
+          formControlName="validDate"
+          placeholder="MM/YY"
+          maxlength="5"
+        >
+        <div class="error-message" *ngIf="cardForm.get('validDate')?.touched">
+          {{ getErrorMessage('validDate') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cvv">CVV</label>
+        <input
+          id="cvv"
+          type="text"
+          formControlName="cvv"
+          placeholder="123"
+          maxlength="3"
+        >
+        <div class="error-message" *ngIf="cardForm.get('cvv')?.touched">
+          {{ getErrorMessage('cvv') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="nameOnCard">Kart Üzerindeki İsim</label>
+      <input
+        id="nameOnCard"
+        type="text"
+        formControlName="nameOnCard"
+        placeholder="Ad Soyad"
+      >
+      <div class="error-message" *ngIf="cardForm.get('nameOnCard')?.touched">
+        {{ getErrorMessage('nameOnCard') }}
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" routerLink="/cards">
+        İptal
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="cardForm.invalid || isLoading">
+        <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+        {{ isLoading ? 'Ekleniyor...' : 'Kartı Ekle' }}
+      </button>
+    </div>
+  </form>
+</div> 

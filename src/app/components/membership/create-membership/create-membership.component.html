@@ -1,0 +1,122 @@
+<div class="create-membership-container">
+  <div class="header">
+    <h1>Dijital Platform Aboneliği</h1>
+    <p>Favori dijital platformunuza abone olun ve ödemelerinizi kolayca yönetin</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-section">
+    <p>Veriler yükleniyor... Lütfen bekleyin.</p>
+  </div>
+
+  <div class="form-container" *ngIf="!isLoading">
+    <div class="membership-card">
+      <div class="card-header">
+        <h2>Yeni Abonelik Oluştur</h2>
+      </div>
+
+      <div class="card-content">
+        <form [formGroup]="membershipForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Digital Platform Seçimi - Custom Dropdown -->
+          <div class="form-section">
+            <label for="platform">Dijital Platform Seçin:</label>
+            <div class="custom-dropdown" [class.open]="isPlatformDropdownOpen">
+              <div class="dropdown-trigger" 
+                   (click)="togglePlatformDropdown()"
+                   [class.has-selection]="membershipForm.get('digitalPlatformId')?.value"
+                   [class.ng-invalid]="membershipForm.get('digitalPlatformId')?.invalid && membershipForm.get('digitalPlatformId')?.touched"
+                   [class.ng-touched]="membershipForm.get('digitalPlatformId')?.touched">
+                <div class="selected-option" *ngIf="getSelectedPlatform(); else placeholder">
+                  <div class="image-container">
+                    <img [src]="getPlatformImage(getSelectedPlatform()!)" 
+                         [alt]="getSelectedPlatform()!.name"
+                         class="platform-image"
+                         (load)="onImageLoad($event)"
+                         (error)="onImageError($event)">
+                  </div>
+                  <span>{{ getSelectedPlatform()!.name }}</span>
+                </div>
+                <ng-template #placeholder>
+                  <span class="placeholder">Platform seçiniz...</span>
+                </ng-template>
+                <i class="dropdown-arrow">▼</i>
+              </div>
+              
+              <div class="dropdown-options" *ngIf="isPlatformDropdownOpen">
+                <div class="dropdown-option" 
+                     *ngFor="let platform of digitalPlatforms; trackBy: trackByPlatformId"
+                     (click)="selectPlatform(platform)"
+                     [class.selected]="membershipForm.get('digitalPlatformId')?.value == platform.id">
+                  <div class="image-container">
+                    <img [src]="getPlatformImage(platform)" 
+                         [alt]="platform.name"
+                         class="platform-image"
+                         (load)="onImageLoad($event)"
+                         (error)="onImageError($event)">
+                  </div>
+                  <span>{{ platform.name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abonelik Türü - Native Select -->
+          <div class="form-section">
+            <label for="subscription">Abonelik Türü:</label>
+            <select id="subscription" formControlName="subscriptionType" required class="form-select">
+              <option value="">Abonelik türü seçiniz...</option>
+              <option *ngFor="let type of subscriptionTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Kredi Kartı - Native Select -->
+          <div class="form-section">
+            <label for="card">Ödeme Kartı:</label>
+            <select id="card" formControlName="creditCardId" required class="form-select">
+              <option value="">Kart seçiniz...</option>
+              <option *ngFor="let card of creditCards" [value]="card.cardId">
+                {{ maskCardNumber(card.cardNo) }} - {{ card.nameOnCard }}
+              </option>
+            </select>
+          </div>
+
+                    <!-- Plan Price Info -->
+          <div class="debug-info" *ngIf="membershipForm.get('digitalPlatformId')?.value && membershipForm.get('subscriptionType')?.value">
+            <div class="plan-price-section">
+              <p><strong>Plan Ücreti:</strong></p>
+              <div *ngIf="isLoadingPrice" class="loading-price">
+                <p>Fiyat yükleniyor...</p>
+              </div>
+              <div *ngIf="!isLoadingPrice && planPrice !== null" class="price-display">
+                <p class="price-amount">₺{{ planPrice | number:'1.2-2' }}</p>
+              </div>
+              <div *ngIf="!isLoadingPrice && planPrice === null && !isLoadingPrice" class="price-error">
+                <p>Fiyat bilgisi alınamadı</p>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="card-actions">
+        <button type="button" 
+                (click)="onSubmit()"
+                [disabled]="!membershipForm.valid || isLoading"
+                class="btn-primary">
+          {{ isLoading ? 'Oluşturuluyor...' : 'Abonelik Oluştur' }}
+        </button>
+        
+        <button type="button" 
+                (click)="goHome()"
+                class="btn-secondary">
+          İptal
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div> 

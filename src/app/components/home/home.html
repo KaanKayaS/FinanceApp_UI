@@ -1,0 +1,114 @@
+<div class="home-container">
+    <!-- Dashboard Kartları -->
+    <div class="dashboard-section">
+        <div class="welcome-header">
+            <h1>Hoş Geldiniz!</h1>
+            <p class="subtitle">Finansal durumunuza genel bir bakış</p>
+        </div>
+
+        <div class="stats-row">
+            <!-- Son Ay Toplam Harcama -->
+            <mat-card class="stat-card expense-card">
+                <mat-card-content>
+                    <div class="stat-icon">
+                        <mat-icon>account_balance_wallet</mat-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Son Ay Toplam Harcama</h3>
+                        <p class="stat-value">{{ lastMonthTotal | number:'1.2-2' }} ₺</p>
+                        <div class="stat-badge">
+                            <mat-icon>trending_up</mat-icon>
+                            Son 30 gün
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <!-- Abonelik Sayısı -->
+            <mat-card class="stat-card subscription-card">
+                <mat-card-content>
+                    <div class="stat-icon">
+                        <mat-icon>subscriptions</mat-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Aktif Abonelikler</h3>
+                        <p class="stat-value">{{ membershipCount }}</p>
+                        <div class="stat-badge">
+                            <mat-icon>check_circle</mat-icon>
+                            Güncel
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <!-- Son Harcamalar -->
+        <mat-card class="recent-expenses-card">
+            <mat-card-header>
+                <div class="card-header-content">
+                    <mat-card-title>
+                        <mat-icon>receipt_long</mat-icon>
+                        <span class="title-text">Son Harcamalar</span>
+                    </mat-card-title>
+                    <button mat-button color="primary" class="view-all-btn" [routerLink]="['/payment-history']">
+                        Tümünü Gör
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+                </div>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="expense-list">
+                    @for (expense of lastExpenses; track expense.name) {
+                        <div class="expense-item">
+                            <div class="expense-icon">
+                                <mat-icon>payment</mat-icon>
+                            </div>
+                            <div class="expense-info">
+                                <h4>{{ expense.name }}</h4>
+                                <span class="expense-date">{{ expense.paidDate | date:'dd MMM yyyy HH:mm' }}</span>
+                            </div>
+                            <span class="expense-amount">{{ expense.amount | number:'1.2-2' }} ₺</span>
+                        </div>
+                    }
+                    @if (lastExpenses.length === 0) {
+                        <div class="no-expenses">
+                            <mat-icon>info</mat-icon>
+                            <p>Henüz harcama kaydı bulunmamaktadır.</p>
+                        </div>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Takvim Bölümü -->
+    <div class="calendar-section">
+        <mat-card class="calendar-card">
+            <mat-card-header>
+                <div class="card-header-content">
+                    <mat-card-title>
+                        <mat-icon>event</mat-icon>
+                        Talimat Takvimi
+                    </mat-card-title>
+                    <div class="calendar-legend">
+                        <span class="legend-item">
+                            <span class="dot past"></span>
+                            Geçmiş Ödemeler
+                        </span>
+                        <span class="legend-item">
+                            <span class="dot upcoming"></span>
+                            Yaklaşan Ödemeler
+                        </span>
+                        <span class="legend-item">
+                            <span class="dot regular"></span>
+                            Normal Ödemeler
+                        </span>
+                    </div>
+                </div>
+            </mat-card-header>
+            <mat-card-content>
+                <full-calendar [options]="calendarOptions"></full-calendar>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

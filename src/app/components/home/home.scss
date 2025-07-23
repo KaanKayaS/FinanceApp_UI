@@ -1,0 +1,540 @@
+.home-container {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 64px); // Navbar yüksekliğini çıkar
+
+    .welcome-header {
+        text-align: left;
+        margin-bottom: 24px;
+        
+        h1 {
+            font-size: 32px;
+            color: #2c3e50;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            margin: 8px 0 0;
+            font-size: 16px;
+        }
+    }
+
+    .dashboard-section {
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+
+            .stat-card {
+                border-radius: 16px;
+                border: none;
+                transition: transform 0.2s, box-shadow 0.2s;
+                overflow: hidden;
+
+                &:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                }
+
+                &.expense-card {
+                    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                }
+
+                &.subscription-card {
+                    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+                }
+
+                mat-card-content {
+                    display: flex;
+                    align-items: flex-start;
+                    padding: 24px;
+
+                    .stat-icon {
+                        background-color: rgba(255, 255, 255, 0.2);
+                        border-radius: 12px;
+                        width: 56px;
+                        height: 56px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-right: 20px;
+
+                        mat-icon {
+                            font-size: 28px;
+                            width: 28px;
+                            height: 28px;
+                            color: white;
+                        }
+                    }
+
+                    .stat-info {
+                        flex: 1;
+
+                        h3 {
+                            margin: 0;
+                            color: rgba(255, 255, 255, 0.9);
+                            font-size: 16px;
+                            font-weight: normal;
+                        }
+
+                        .stat-value {
+                            margin: 8px 0;
+                            font-size: 32px;
+                            font-weight: bold;
+                            color: white;
+                        }
+
+                        .stat-badge {
+                            display: inline-flex;
+                            align-items: center;
+                            background-color: rgba(255, 255, 255, 0.1);
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 14px;
+                            color: white;
+
+                            mat-icon {
+                                font-size: 16px;
+                                width: 16px;
+                                height: 16px;
+                                margin-right: 4px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .recent-expenses-card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+
+            .card-header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 24px;
+                border-bottom: 1px solid #eee;
+
+                mat-card-title {
+                    display: flex;
+                    align-items: center;
+                    font-size: 18px;
+                    margin: 0;
+                    margin-right: 24px; // Başlık ile buton arasına boşluk ekle
+
+                    mat-icon {
+                        margin-right: 8px;
+                        color: #4f46e5;
+                    }
+
+                    .title-text {
+                        margin-right: auto; // Başlık metnini sola yasla
+                    }
+                }
+
+                .view-all-btn {
+                    display: flex;
+                    align-items: center;
+                    color: #4f46e5;
+                    font-weight: 500;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    transition: background-color 0.2s;
+
+                    &:hover {
+                        background-color: rgba(79, 70, 229, 0.1);
+                    }
+
+                    mat-icon {
+                        margin-left: 4px;
+                    }
+                }
+            }
+
+            mat-card-content {
+                padding: 0;
+
+                .expense-list {
+                    .expense-item {
+                        display: flex;
+                        align-items: center;
+                        padding: 16px 24px;
+                        border-bottom: 1px solid #eee;
+                        transition: background-color 0.2s;
+
+                        &:hover {
+                            background-color: #f8f9fa;
+                        }
+
+                        &:last-child {
+                            border-bottom: none;
+                        }
+
+                        .expense-icon {
+                            background-color: #f0f4ff;
+                            border-radius: 8px;
+                            width: 40px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-right: 16px;
+
+                            mat-icon {
+                                color: #4f46e5;
+                            }
+                        }
+
+                        .expense-info {
+                            flex: 1;
+
+                            h4 {
+                                margin: 0;
+                                font-size: 16px;
+                                color: #333;
+                            }
+
+                            .expense-date {
+                                font-size: 14px;
+                                color: #6c757d;
+                            }
+                        }
+
+                        .expense-amount {
+                            font-weight: 600;
+                            color: #dc2626;
+                            font-size: 16px;
+                        }
+                    }
+                }
+
+                .no-expenses {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 48px 24px;
+                    color: #6c757d;
+
+                    mat-icon {
+                        font-size: 48px;
+                        width: 48px;
+                        height: 48px;
+                        margin-bottom: 16px;
+                        opacity: 0.5;
+                    }
+
+                    p {
+                        margin: 0;
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar-section {
+        .calendar-card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+            .past-event {
+                position: relative;
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    background-color: #f39c12;
+                    border-radius: 50%;
+                    margin-right: 4px;
+                    position: absolute;
+                    left: 2px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+
+            .upcoming-event {
+                position: relative;
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    background-color: #ff4444;
+                    border-radius: 50%;
+                    margin-right: 4px;
+                    position: absolute;
+                    left: 2px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+
+            .normal-event {
+                position: relative;
+                &::before {
+                    content: '';
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    background-color: #4f46e5;
+                    border-radius: 50%;
+                    margin-right: 4px;
+                    position: absolute;
+                    left: 2px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+
+            .card-header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 24px;
+                border-bottom: 1px solid #eee;
+
+                mat-card-title {
+                    display: flex;
+                    align-items: center;
+                    font-size: 18px;
+                    margin: 0;
+                    margin-right: 32px; // Başlık ile legend arasındaki boşluğu artır
+
+                    mat-icon {
+                        margin-right: 8px;
+                        color: #4f46e5;
+                    }
+                }
+
+                .calendar-legend {
+                    display: flex;
+                    gap: 24px; // Legend itemları arasındaki boşluğu artır
+                    margin-left: auto; // Sağa yasla
+
+                    .legend-item {
+                        display: flex;
+                        align-items: center;
+                        font-size: 14px;
+                        color: #666;
+                        white-space: nowrap; // Yazıyı tek satırda tut
+
+                        .dot {
+                            width: 8px;
+                            height: 8px;
+                            border-radius: 50%;
+                            margin-right: 12px; // Nokta ile yazı arasındaki boşluğu artır
+                            flex-shrink: 0; // Noktanın küçülmesini engelle
+
+                            &.past {
+                                background-color: #f39c12;
+                            }
+
+                            &.upcoming {
+                                background-color: #ff4444;
+                            }
+
+                            &.regular {
+                                background-color: #4f46e5;
+                            }
+                        }
+                    }
+                }
+            }
+
+            mat-card-content {
+                padding: 24px;
+                min-height: 400px;
+
+                ::ng-deep {
+                    .fc {
+                        .fc-toolbar {
+                            .fc-button {
+                                background-color: #4f46e5;
+                                border-color: #4f46e5;
+
+                                &:hover {
+                                    background-color: #4338ca;
+                                    border-color: #4338ca;
+                                }
+
+                                &.fc-button-active {
+                                    background-color: #3730a3;
+                                    border-color: #3730a3;
+                                }
+                            }
+                        }
+
+                        .fc-event {
+                            border-radius: 4px;
+                            border: none;
+                            padding: 4px 8px;
+                            margin: 2px 0;
+                            cursor: pointer;
+                            transition: transform 0.2s, box-shadow 0.2s;
+
+                            &:hover {
+                                transform: translateY(-1px);
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            }
+
+                            .fc-content {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 2px;
+
+                                .fc-title {
+                                    font-weight: 500;
+                                    font-size: 12px;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                }
+
+                                .fc-amount {
+                                    font-size: 11px;
+                                    opacity: 0.9;
+                                }
+                            }
+                        }
+
+                        .fc-day-today {
+                            background-color: #f0f4ff !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// SweetAlert2 özelleştirmeleri
+::ng-deep {
+    .swal2-popup {
+        border-radius: 16px !important;
+        padding: 2rem !important;
+
+        .swal2-title {
+            font-size: 1.5rem !important;
+            font-weight: 600 !important;
+            color: #2c3e50 !important;
+        }
+
+        .event-details {
+            margin-top: 1rem;
+            text-align: left;
+
+            p {
+                margin: 0.5rem 0;
+                color: #4a5568;
+                font-size: 1rem;
+
+                strong {
+                    color: #2d3748;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .swal2-icon {
+            margin: 1.5rem auto !important;
+
+            &.swal2-success {
+                border-color: #f39c12 !important;
+                color: #f39c12 !important;
+            }
+
+            &.swal2-warning {
+                border-color: #ff4444 !important;
+                color: #ff4444 !important;
+            }
+
+            &.swal2-info {
+                border-color: #4f46e5 !important;
+                color: #4f46e5 !important;
+            }
+        }
+
+        .swal2-confirm {
+            border-radius: 8px !important;
+            padding: 0.75rem 1.5rem !important;
+            font-weight: 500 !important;
+        }
+    }
+}
+
+// Mobil için responsive tasarım
+@media (max-width: 768px) {
+    .home-container {
+        padding: 16px;
+
+        .welcome-header {
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+        }
+
+        .dashboard-section {
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .stat-card {
+                mat-card-content {
+                    padding: 16px;
+
+                    .stat-icon {
+                        width: 48px;
+                        height: 48px;
+
+                        mat-icon {
+                            font-size: 24px;
+                            width: 24px;
+                            height: 24px;
+                        }
+                    }
+
+                    .stat-info {
+                        .stat-value {
+                            font-size: 24px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .calendar-section {
+            .calendar-card {
+                .card-header-content {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 12px;
+                }
+
+                mat-card-content {
+                    padding: 12px;
+                    min-height: 300px;
+                }
+            }
+        }
+    }
+}
+

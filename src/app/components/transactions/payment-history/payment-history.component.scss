@@ -1,0 +1,59 @@
+.payment-history-container {
+    padding: 20px;
+    
+    h2 {
+        margin-bottom: 24px;
+        color: #333;
+    }
+
+    .expense-list {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+
+        .expense-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:not(.header):hover {
+                background-color: #f8f9fa;
+            }
+
+            &.header {
+                background-color: #f8f9fa;
+                font-weight: bold;
+                color: #495057;
+            }
+
+            .name {
+                padding-right: 16px;
+            }
+
+            .amount {
+                text-align: right;
+                color: #dc3545;
+                font-weight: 500;
+            }
+
+            .date {
+                text-align: right;
+                color: #6c757d;
+            }
+        }
+    }
+
+    .no-expenses {
+        padding: 32px;
+        text-align: center;
+        color: #6c757d;
+        font-style: italic;
+    }
+} 

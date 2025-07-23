@@ -1,0 +1,83 @@
+<div class="expense-agenda-container">
+    <h2>Manuel Gider Ajandası</h2>
+
+    <!-- Mesaj Alanları -->
+    <div class="message success" *ngIf="successMessage">
+        <i class="fas fa-check-circle"></i> {{ successMessage }}
+    </div>
+    <div class="message error" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <div class="expense-list">
+        <div class="expense-card" *ngFor="let expense of expenses">
+            <div class="expense-header">
+                <h3>{{ expense.name }}</h3>
+                <div class="action-buttons">
+                    <button class="edit-btn" (click)="openEditModal(expense)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" (click)="deleteExpense(expense.id)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="expense-body">
+                <div class="amount">
+                    {{ formatCurrency(expense.amount) }}
+                </div>
+                <div class="date">
+                    {{ formatDate(expense.paidDate) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="no-expenses" *ngIf="expenses.length === 0">
+            Henüz manuel gider kaydı bulunmamaktadır.
+        </div>
+    </div>
+
+    <!-- Düzenleme Modalı -->
+    <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Gider Düzenle</h3>
+                <button class="close-btn" (click)="closeEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form [formGroup]="editForm" (ngSubmit)="updateExpense()">
+                <div class="form-group">
+                    <label for="expenseName">Gider Adı</label>
+                    <input 
+                        type="text" 
+                        id="expenseName"
+                        formControlName="name"
+                        class="form-control"
+                        placeholder="Gider adını girin"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="expenseAmount">Tutar (₺)</label>
+                    <input 
+                        type="number" 
+                        id="expenseAmount"
+                        formControlName="amount"
+                        class="form-control"
+                        step="0.01"
+                        placeholder="Tutarı girin"
+                    >
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" (click)="closeEditModal()">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid || isUpdating">
+                        <span *ngIf="isUpdating">Güncelleniyor...</span>
+                        <span *ngIf="!isUpdating">Güncelle</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

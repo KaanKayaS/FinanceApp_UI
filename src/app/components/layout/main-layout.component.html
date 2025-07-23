@@ -1,0 +1,36 @@
+<div class="layout-container">
+  <app-navbar></app-navbar>
+  <div class="content-wrapper">
+    <!-- Menü Toggle Butonu -->
+    <button class="menu-toggle" (click)="toggleSidebar()">
+      <i class="fas" [class.fa-times]="isSidebarOpen" [class.fa-bars]="!isSidebarOpen"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" [class.closed]="!isSidebarOpen">
+      <div class="menu-group" *ngFor="let menu of menus">
+        <div class="menu-header" (click)="toggleSubmenu(menu)">
+          <span>{{ menu.name }}</span>
+          <i class="fas" 
+             [class.fa-chevron-down]="isSubmenuOpen(menu)" 
+             [class.fa-chevron-right]="!isSubmenuOpen(menu)">
+          </i>
+        </div>
+        <div class="submenu-list" [class.expanded]="isSubmenuOpen(menu)">
+          <a *ngFor="let submenu of menu.children" 
+             [routerLink]="submenu.url"
+             routerLinkActive="active"
+             class="submenu-item">
+            <i class="fas fa-angle-right"></i>
+            <span>{{ submenu.name }}</span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Ana İçerik -->
+    <main class="main-content" [class.expanded]="!isSidebarOpen">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div> 
