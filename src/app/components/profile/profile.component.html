@@ -1,0 +1,130 @@
+<div class="profile-container">
+  <div class="profile-content">
+    <!-- Kullanıcı Bilgileri Bölümü -->
+    <div class="profile-section">
+      <h2 class="section-title">Üyelik Bilgilerim</h2>
+      <div class="form-group">
+        <label for="fullName">Ad Soyad</label>
+        <input 
+          type="text" 
+          id="fullName" 
+          [(ngModel)]="userInfo.fullName" 
+          readonly
+          class="form-control"
+        >
+      </div>
+      <div class="form-group">
+        <label for="email">E-Mail</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="userInfo.email" 
+          readonly
+          class="form-control"
+        >
+      </div>
+    </div>
+
+    <!-- Şifre Değiştirme Bölümü -->
+    <div class="profile-section">
+      <h2 class="section-title">Şifre Güncelleme</h2>
+      
+      <!-- Genel Hata Mesajı -->
+      <div class="error-message general-error" *ngIf="generalError">
+        {{ generalError }}
+      </div>
+
+      <form (ngSubmit)="changePassword()" #passwordForm="ngForm">
+        <div class="form-group">
+          <label for="currentPassword">Şu Anki Şifre</label>
+          <div class="password-input-container">
+            <input 
+              type="password" 
+              id="currentPassword" 
+              [(ngModel)]="passwordData.currentPassword" 
+              name="currentPassword"
+              required
+              class="form-control"
+              [class.error]="passwordForm.submitted && !passwordData.currentPassword || getFieldError('currentPassword')"
+            >
+          </div>
+          <!-- Backend validation error for current password -->
+          <div class="error-message" *ngIf="getFieldError('currentPassword')">
+            {{ getFieldError('currentPassword') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">Yeni Şifre</label>
+          <div class="password-input-container">
+            <input 
+              [type]="showNewPassword ? 'text' : 'password'" 
+              id="newPassword" 
+              [(ngModel)]="passwordData.newPassword" 
+              name="newPassword"
+              required
+              class="form-control"
+              [class.error]="passwordForm.submitted && !passwordData.newPassword || getFieldError('newPassword')"
+              (input)="checkPasswordMatch()"
+            >
+            <button 
+              type="button" 
+              class="password-toggle" 
+              (click)="togglePasswordVisibility('newPassword')"
+            >
+              <mat-icon>{{ showNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <div class="password-requirements">
+            Şifreniz en az 6 karakterden oluşmalı.
+          </div>
+          <!-- Backend validation error for new password -->
+          <div class="error-message" *ngIf="getFieldError('newPassword')">
+            {{ getFieldError('newPassword') }}
+          </div>
+          <div class="error-message" *ngIf="showSamePasswordError">
+            Yeni şifreniz mevcut şifrenizle aynı olamaz!
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmNewPassword">Yeni Şifre (Tekrar)</label>
+          <div class="password-input-container">
+            <input 
+              [type]="showConfirmPassword ? 'text' : 'password'" 
+              id="confirmNewPassword" 
+              [(ngModel)]="passwordData.confirmNewPassword" 
+              name="confirmNewPassword"
+              required
+              class="form-control"
+              [class.error]="passwordForm.submitted && !passwordData.confirmNewPassword || getFieldError('confirmNewPassword')"
+              (input)="checkPasswordMatch()"
+            >
+            <button 
+              type="button" 
+              class="password-toggle" 
+              (click)="togglePasswordVisibility('confirmNewPassword')"
+            >
+              <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <!-- Backend validation error for confirm password -->
+          <div class="error-message" *ngIf="getFieldError('confirmNewPassword')">
+            {{ getFieldError('confirmNewPassword') }}
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn-primary"
+            [disabled]="isLoading"
+          >
+            <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
+            {{ isLoading ? 'Güncelleniyor...' : 'Şifreyi Güncelle' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

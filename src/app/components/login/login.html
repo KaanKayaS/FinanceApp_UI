@@ -1,6 +1,9 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
+      <div class="logo-container">
+        <img src="./assets/login_logo.svg" alt="FinStats Logo" class="login-logo" onerror="console.log('Logo yüklenemedi')" />
+      </div>
       <h1>Giriş Yap</h1>
       <p>Hesabınıza giriş yapın</p>
     </div>
@@ -43,6 +46,9 @@
         </div>
         <div class="error-message" *ngIf="isFieldInvalid('password')">
           <span *ngIf="loginForm.get('password')?.errors?.['required']">Şifre gerekli</span>
+        </div>
+        <div class="forgot-password">
+          <a routerLink="/forgot-password">Şifremi Unuttum</a>
         </div>
       </div>
       

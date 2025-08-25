@@ -1,12 +1,15 @@
 .home-container {
     padding: 24px;
-    max-width: 1400px;
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
     display: grid;
     gap: 24px;
     grid-template-columns: 1fr;
     background-color: #f8f9fa;
     min-height: calc(100vh - 64px); // Navbar yüksekliğini çıkar
+    box-sizing: border-box;
+    overflow-x: hidden;
 
     .welcome-header {
         text-align: left;
@@ -29,8 +32,8 @@
     .dashboard-section {
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
             margin-bottom: 24px;
 
             .stat-card {
@@ -113,11 +116,26 @@
             }
         }
 
+        .expenses-chart-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+
+            @media (max-width: 1024px) {
+                grid-template-columns: 1fr;
+            }
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
         .recent-expenses-card {
             border-radius: 16px;
             border: none;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 24px;
 
             .card-header-content {
                 display: flex;
@@ -238,6 +256,42 @@
                         margin: 0;
                         font-size: 16px;
                     }
+                }
+            }
+        }
+
+        .profit-loss-chart-card {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+
+            .card-header-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 24px;
+                border-bottom: 1px solid #eee;
+
+                mat-card-title {
+                    display: flex;
+                    align-items: center;
+                    font-size: 18px;
+                    margin: 0;
+
+                    mat-icon {
+                        margin-right: 8px;
+                        color: #4f46e5;
+                    }
+                }
+            }
+
+            mat-card-content {
+                padding: 24px;
+
+                .chart-container {
+                    position: relative;
+                    height: 300px;
+                    width: 100%;
                 }
             }
         }
@@ -476,8 +530,132 @@
     }
 }
 
-// Mobil için responsive tasarım
-@media (max-width: 768px) {
+// iPhone 13 ve küçük ekranlar için responsive tasarım (390px x 844px)
+@media (max-width: 430px) {
+    .home-container {
+        padding: 12px;
+        gap: 16px;
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+
+        .welcome-header {
+            margin-bottom: 16px;
+            
+            h1 {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+        }
+
+        .dashboard-section {
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .stat-card {
+                width: 100%;
+                max-width: 100%;
+                
+                mat-card-content {
+                    padding: 16px;
+
+                    .stat-icon {
+                        width: 44px;
+                        height: 44px;
+                        margin-right: 12px;
+
+                        mat-icon {
+                            font-size: 22px;
+                            width: 22px;
+                            height: 22px;
+                        }
+                    }
+
+                    .stat-info {
+                        h3 {
+                            font-size: 14px;
+                        }
+                        
+                        .stat-value {
+                            font-size: 22px;
+                        }
+                        
+                        .stat-badge {
+                            font-size: 12px;
+                            padding: 4px 10px;
+                        }
+                    }
+                }
+            }
+
+            .expenses-chart-section {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .recent-expenses-card,
+            .profit-loss-chart-card {
+                width: 100%;
+                max-width: 100%;
+                
+                .card-header-content {
+                    padding: 16px;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    
+                    mat-card-title {
+                        font-size: 16px;
+                        margin-right: 8px;
+                    }
+                }
+                
+                mat-card-content {
+                    padding: 12px;
+                }
+            }
+        }
+
+        .calendar-section {
+            .calendar-card {
+                width: 100%;
+                max-width: 100%;
+                
+                .card-header-content {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 12px;
+                    padding: 16px;
+                    
+                    .calendar-legend {
+                        flex-direction: column;
+                        gap: 8px;
+                        width: 100%;
+                        margin-left: 0;
+                        
+                        .legend-item {
+                            font-size: 12px;
+                        }
+                    }
+                }
+
+                mat-card-content {
+                    padding: 12px;
+                    min-height: 280px;
+                }
+            }
+        }
+    }
+}
+
+// Tablet ve orta ekranlar için responsive tasarım
+@media (max-width: 768px) and (min-width: 431px) {
     .home-container {
         padding: 16px;
 
@@ -492,6 +670,11 @@
         }
 
         .dashboard-section {
+            .expenses-chart-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
             .stats-row {
                 grid-template-columns: 1fr;
                 gap: 16px;

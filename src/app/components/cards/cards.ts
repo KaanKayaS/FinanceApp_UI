@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CreditCardService } from '../../services/credit-card.service';
 import { CreditCard } from '../../models/credit-card';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cards',
@@ -53,23 +54,49 @@ export class CardsComponent implements OnInit {
   }
 
   removeCard(cardId: number) {
-    if (confirm('Bu kartı kaldırmak istediğinizden emin misiniz?')) {
-      this.creditCardService.removeCreditCard(cardId).subscribe({
-        next: (response) => {
-          console.log('API Response:', response);
-          alert(response || 'Kart başarıyla kaldırıldı.');
-          this.loadCards();
-        },
-        error: (error) => {
-          console.error('Error detail:', error);
-          if (error.error) {
-            alert(error.error);
-          } else {
-            alert('Kart kaldırılırken bir hata oluştu.');
+    const card = this.cards.find(c => c.cardId === cardId);
+    const cardNumber = card ? this.maskCardNumber(card.cardNo) : 'Bu kartı';
+    
+    Swal.fire({
+      title: 'Emin misiniz?',
+      text: `${cardNumber} kartını kaldırmak istediğinizden emin misiniz? Bu işlem geri alınamaz.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Evet, Kaldır!',
+      cancelButtonText: 'İptal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.creditCardService.removeCreditCard(cardId).subscribe({
+          next: (response) => {
+            console.log('API Response:', response);
+            Swal.fire({
+              title: 'Başarılı!',
+              text: response || 'Kart başarıyla kaldırıldı.',
+              icon: 'success',
+              confirmButtonText: 'Tamam'
+            });
+            this.loadCards();
+          },
+          error: (error) => {
+            console.error('Error detail:', error);
+            const errorMessage = error.error || 'Kart kaldırılırken bir hata oluştu.';
+            Swal.fire({
+              title: 'Hata!',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: 'Tamam'
+            });
           }
-        }
-      });
-    }
+        });
+      }
+    });
+  }
+
+  maskCardNumber(cardNo: string): string {
+    if (cardNo.length < 4) return cardNo;
+    return '**** **** **** ' + cardNo.slice(-4);
   }
 
   viewTransactions(cardId: number) {

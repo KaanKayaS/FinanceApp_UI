@@ -1,0 +1,148 @@
+<div class="about-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="back-button" (click)="goHome()">
+      <span class="material-icons">arrow_back</span>
+    </div>
+    <h1 class="page-title">
+      <span class="material-icons">info</span>
+      Hakkımızda
+    </h1>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h2>Finansal Geleceğinizin<br><span class="highlight">Dijital Partneri</span></h2>
+        <p>FinStats ile kişisel finansmanınızı yönetin, yatırım planları oluşturun ve finansal hedeflerinize ulaşın. Modern teknoloji ile güvenli ve kolay finans yönetimi.</p>
+        <div class="hero-badges">
+          <span class="badge">📱 Mobil Uyumlu</span>
+          <span class="badge">🔒 Güvenli</span>
+          <span class="badge">🚀 Hızlı</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="app-demo">
+              <div class="demo-header">
+                <span class="demo-time">14:30</span>
+                <span class="demo-battery">🔋</span>
+              </div>
+              <div class="demo-content">
+                <div class="demo-card">
+                  <span class="material-icons">account_balance_wallet</span>
+                  <span>₺25.450</span>
+                </div>
+                <div class="demo-chart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Section -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of stats; let i = index">
+        <div class="stat-icon">
+          <span class="material-icons">{{ stat.icon }}</span>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">
+            <span *ngIf="i === 0 && isLoadingUserCount" class="loading-spinner">
+              <span class="material-icons spin">refresh</span>
+            </span>
+            <span *ngIf="!(i === 0 && isLoadingUserCount)">{{ stat.number }}</span>
+          </div>
+          <div class="stat-label">{{ stat.label }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission Section -->
+  <div class="mission-section">
+    <div class="section-header">
+      <h2>Misyonumuz</h2>
+      <p>Finansal özgürlüğe giden yolda size rehberlik etmek</p>
+    </div>
+    <div class="mission-content">
+      <div class="mission-text">
+        <h3>💡 Vizyonumuz</h3>
+        <p>Herkesin finansal hedeflerine kolayca ulaşabileceği bir dünya yaratmak. Teknoloji ve finans alanındaki uzmanlığımızı birleştirerek, kullanıcılarımıza en iyi deneyimi sunuyoruz.</p>
+        
+        <h3>🎯 Hedefimiz</h3>
+        <p>Kişisel finans yönetimini herkes için erişilebilir, anlaşılır ve güvenli hale getirmek. Kullanıcılarımızın finansal okuryazarlığını artırarak daha bilinçli kararlar vermelerine yardımcı olmak.</p>
+      </div>
+      <div class="mission-visual">
+        <div class="vision-cards">
+          <div class="vision-card">
+            <span class="material-icons">lightbulb</span>
+            <span>İnovasyon</span>
+          </div>
+          <div class="vision-card">
+            <span class="material-icons">favorite</span>
+            <span>Güven</span>
+          </div>
+          <div class="vision-card">
+            <span class="material-icons">rocket_launch</span>
+            <span>Büyüme</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <div class="section-header">
+      <h2>Özelliklerimiz</h2>
+      <p>Size sunduğumuz modern finans yönetimi araçları</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">
+          <span class="material-icons">{{ feature.icon }}</span>
+        </div>
+        <div class="feature-content">
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Section -->
+  <div class="team-section">
+    <div class="section-header">
+      <h2>Ekibimiz</h2>
+      <p>Size hizmet eden uzman kadromuz</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card" *ngFor="let member of teamMembers">
+        <div class="member-avatar">{{ member.image }}</div>
+        <div class="member-info">
+          <h3>{{ member.name }}</h3>
+          <p class="member-role">{{ member.role }}</p>
+          <p class="member-description">{{ member.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta-section">
+    <div class="cta-content">
+      <h2>Finansal Yolculuğunuza Başlayın</h2>
+      <p>FinStats ile finansal hedeflerinize ulaşmak hiç bu kadar kolay olmamıştı</p>
+      <button class="cta-button" (click)="goHome()">
+        <span class="material-icons">dashboard</span>
+        Dashboard'a Git
+      </button>
+    </div>
+  </div>
+</div>

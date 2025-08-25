@@ -1,0 +1,132 @@
+<!-- AI Chat Floating Button -->
+<div class="ai-chat-container">
+  <!-- Mobile Backdrop -->
+  <div class="chat-backdrop" *ngIf="isOpen" (click)="toggleChat()"></div>
+  
+  <!-- Floating AI Button -->
+  <button 
+    class="ai-chat-button" 
+    (click)="toggleChat()"
+    [class.active]="isOpen"
+    [disabled]="!isConnected">
+    <mat-icon class="ai-icon">smart_toy</mat-icon>
+    <div class="connection-indicator" [style.background-color]="getConnectionStatusColor()"></div>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" [class.open]="isOpen">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="header-content">
+        <div class="ai-info">
+          <mat-icon class="ai-avatar">smart_toy</mat-icon>
+          <div class="ai-details">
+            <h3>Finansal Asistan</h3>
+            <span class="connection-status" [style.color]="getConnectionStatusColor()">
+              {{ getConnectionStatusText() }}
+            </span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button mat-icon-button (click)="clearChat()" class="clear-btn" title="Sohbeti Temizle">
+            <mat-icon>clear_all</mat-icon>
+          </button>
+          <button mat-icon-button (click)="toggleChat()" class="close-btn" title="Kapat">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Connection ID Display -->
+      <div class="connection-info">
+        <mat-chip-set>
+          <mat-chip class="connection-chip">
+            <mat-icon class="chip-icon">link</mat-icon>
+            ID: {{ connectionId || 'Bağlanıyor...' }}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="messages-container" #messageContainer>
+      @if (messages.length === 0) {
+        <div class="welcome-message">
+          <mat-icon class="welcome-icon">psychology</mat-icon>
+          <h4>Finansal Asistanınız</h4>
+          <p>Finansal konularda size yardımcı olmaya hazırım. Harcamalarınız, bütçeniz, yatırımlarınız hakkında sorular sorabilirsiniz.</p>
+          <div class="suggestion-chips">
+            <mat-chip-set>
+              <mat-chip class="suggestion-chip" (click)="newMessage = 'Aylık harcama raporumu mail atar mısın?'; sendMessage()">
+                Aylık harcama raporumu mail atar mısın?
+              </mat-chip>
+              <mat-chip class="suggestion-chip" (click)="newMessage = 'Talimat raporumu mail atar mısın?'; sendMessage()">
+                Talimat raporumu mail atar mısın?
+              </mat-chip>
+              <mat-chip class="suggestion-chip" (click)="newMessage = 'Son bir aydaki kar-zarar durumumu getirir misin?'; sendMessage()">
+                Kar-zarar durumumu getirir misin?
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      }
+
+      @for (message of messages; track message.id) {
+        <div class="message-wrapper" [class.user-message]="message.isUser" [class.ai-message]="!message.isUser">
+          <div class="message-content">
+            <div class="message-avatar">
+              @if (message.isUser) {
+                <mat-icon class="user-avatar">person</mat-icon>
+              } @else {
+                <mat-icon class="ai-avatar">smart_toy</mat-icon>
+              }
+            </div>
+            <div class="message-bubble">
+              <div class="message-text">{{ message.content }}</div>
+              <div class="message-time">{{ formatTimestamp(message.timestamp) }}</div>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (isLoading) {
+        <div class="message-wrapper ai-message">
+          <div class="message-content">
+            <div class="message-avatar">
+              <mat-icon class="ai-avatar">smart_toy</mat-icon>
+            </div>
+            <div class="message-bubble">
+              <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Message Input -->
+    <div class="message-input-container">
+      <mat-form-field class="message-input-field" appearance="outline">
+        <input 
+          matInput 
+          [(ngModel)]="newMessage" 
+          (keypress)="onKeyPress($event)"
+          placeholder="Mesajınızı yazın..."
+          #messageInput
+          [disabled]="!isConnected || isLoading">
+        <mat-icon matSuffix class="input-icon">send</mat-icon>
+      </mat-form-field>
+      <button 
+        mat-fab 
+        color="primary" 
+        class="send-button" 
+        (click)="sendMessage()"
+        [disabled]="!newMessage.trim() || !isConnected || isLoading">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+</div> 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar';
@@ -13,13 +13,29 @@ import { Menu, MenuService } from '../../services/menu.service';
 })
 export class MainLayoutComponent implements OnInit {
   menus: Menu[] = [];
-  isSidebarOpen = true;
+  isSidebarOpen = false; // Mobilde başlangıçta kapalı
   openSubmenus = new Set<number>();
+  isMobileView = false;
 
   constructor(private menuService: MenuService) {}
 
   ngOnInit() {
     this.loadMenus();
+    this.checkMobileView();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkMobileView();
+  }
+
+  private checkMobileView() {
+    this.isMobileView = window.innerWidth <= 768;
+    if (this.isMobileView) {
+      this.isSidebarOpen = false;
+    } else {
+      this.isSidebarOpen = true;
+    }
   }
 
   loadMenus() {
@@ -39,6 +55,22 @@ export class MainLayoutComponent implements OnInit {
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+    
+    // Mobilde body scroll'u kontrol et
+    if (this.isMobileView) {
+      if (this.isSidebarOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+  }
+
+  closeSidebar() {
+    this.isSidebarOpen = false;
+    if (this.isMobileView) {
+      document.body.style.overflow = '';
+    }
   }
 
   toggleSubmenu(menu: Menu) {

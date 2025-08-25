@@ -1,0 +1,356 @@
+.create-investment-plan-container {
+  min-height: calc(100vh - 64px);
+  background-color: #f8f9fa;
+  padding: 24px;
+
+  .header-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+
+    .back-button {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+
+        .material-icons {
+          color: white;
+        }
+      }
+
+      .material-icons {
+        color: #4f46e5;
+        font-size: 24px;
+        transition: color 0.3s ease;
+      }
+    }
+
+    .page-title {
+      color: #2c3e50;
+      font-size: 32px;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .material-icons {
+        color: #4f46e5;
+        font-size: 36px;
+      }
+    }
+  }
+
+  .form-container {
+    max-width: 700px;
+    margin: 0 auto;
+
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+
+      .form-group {
+        margin-bottom: 24px;
+
+        .form-label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-weight: 600;
+          color: #2d3748;
+          margin-bottom: 8px;
+          font-size: 14px;
+
+          .material-icons {
+            font-size: 18px;
+            color: #4f46e5;
+          }
+        }
+
+        .form-input,
+        .form-textarea {
+          width: 100%;
+          padding: 16px;
+          border: 2px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 16px;
+          transition: all 0.3s ease;
+          box-sizing: border-box;
+          font-family: inherit;
+
+          &:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+          }
+
+          &.error {
+            border-color: #e53e3e;
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+          }
+
+          &::placeholder {
+            color: #a0aec0;
+          }
+        }
+
+        .form-textarea {
+          resize: vertical;
+          min-height: 80px;
+          font-family: inherit;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
+          white-space: pre-wrap;
+        }
+
+        .error-message {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          color: #e53e3e;
+          font-size: 12px;
+          margin-top: 6px;
+
+          .material-icons {
+            font-size: 16px;
+          }
+        }
+
+        // Selection Grid for Categories
+        .selection-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 12px;
+          margin-top: 8px;
+
+          .selection-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+
+            &:hover {
+              border-color: #4f46e5;
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+            }
+
+            &.selected {
+              border-color: #4f46e5;
+              background: rgba(79, 70, 229, 0.05);
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+
+              .material-icons {
+                color: #4f46e5;
+              }
+
+              .selection-label {
+                color: #4f46e5;
+                font-weight: 600;
+              }
+            }
+
+            .material-icons {
+              font-size: 24px;
+              color: #718096;
+            }
+
+            .selection-label {
+              font-size: 14px;
+              font-weight: 500;
+              color: #2d3748;
+            }
+          }
+        }
+
+        // Frequency Grid
+        .frequency-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 12px;
+          margin-top: 8px;
+
+          .frequency-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+
+            &:hover {
+              border-color: #4f46e5;
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+            }
+
+            &.selected {
+              border-color: #4f46e5;
+              background: rgba(79, 70, 229, 0.05);
+              transform: translateY(-2px);
+              box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+
+              .material-icons {
+                color: #4f46e5;
+              }
+
+              .frequency-label {
+                color: #4f46e5;
+                font-weight: 600;
+              }
+            }
+
+            .material-icons {
+              font-size: 28px;
+              color: #718096;
+            }
+
+            .frequency-label {
+              font-size: 14px;
+              font-weight: 500;
+              color: #2d3748;
+              text-align: center;
+            }
+          }
+        }
+      }
+
+      .form-actions {
+        margin-top: 32px;
+
+        .submit-button {
+          width: 100%;
+          background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          padding: 18px 24px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+
+          &:hover:not(:disabled) {
+            background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+          }
+
+          &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+          }
+
+          .material-icons {
+            font-size: 20px;
+
+            &.spinning {
+              animation: spin 1s linear infinite;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .create-investment-plan-container {
+    padding: 16px;
+
+    .header-section {
+      margin-bottom: 24px;
+
+      .page-title {
+        font-size: 24px;
+
+        .material-icons {
+          font-size: 28px;
+        }
+      }
+    }
+
+    .form-container {
+      .form-card {
+        padding: 24px 20px;
+
+        .form-group {
+          .selection-grid {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+
+            .selection-item {
+              padding: 12px;
+              gap: 8px;
+
+              .selection-label {
+                font-size: 12px;
+              }
+            }
+          }
+
+          .frequency-grid {
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+
+            .frequency-item {
+              padding: 16px 12px;
+
+              .material-icons {
+                font-size: 24px;
+              }
+
+              .frequency-label {
+                font-size: 12px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animation
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} 

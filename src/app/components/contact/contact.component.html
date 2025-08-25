@@ -1,0 +1,98 @@
+<div class="contact-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="back-button" (click)="goHome()">
+      <span class="material-icons">arrow_back</span>
+    </div>
+    <h1 class="page-title">
+      <span class="material-icons">contact_support</span>
+      İletişim
+    </h1>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h2>Size Nasıl <span class="highlight">Yardımcı Olabiliriz?</span></h2>
+      <p>Sorularınız, önerileriniz veya destek talebiniz için bizimle iletişime geçin. Uzman ekibimiz size en iyi hizmeti sunmak için burada.</p>
+    </div>
+    <div class="hero-visual">
+      <div class="contact-illustration">
+        <div class="illustration-circle">
+          <span class="material-icons">support_agent</span>
+        </div>
+        <div class="floating-elements">
+          <div class="element element-1">💬</div>
+          <div class="element element-2">📞</div>
+          <div class="element element-3">✉️</div>
+          <div class="element element-4">🕐</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Info Section -->
+  <div class="contact-info-section">
+    <div class="section-header">
+      <h2>İletişim Bilgileri</h2>
+      <p>Bize ulaşmanın farklı yolları</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-card" *ngFor="let info of contactInfo">
+        <div class="contact-icon">
+          <span class="material-icons">{{ info.icon }}</span>
+        </div>
+        <div class="contact-content">
+          <h3>{{ info.title }}</h3>
+          <p [innerHTML]="info.content"></p>
+          <button 
+            *ngIf="info.action" 
+            class="contact-action"
+            (click)="info.title === 'Adresimiz' ? openMap() : info.title === 'Telefon' ? callPhone() : sendEmail()"
+          >
+            {{ info.action }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-section">
+    <div class="section-header">
+      <h2>Sıkça Sorulan Sorular</h2>
+      <p>En çok merak edilen konular hakkında bilgiler</p>
+    </div>
+    <div class="faq-container">
+      <div class="faq-item" *ngFor="let faq of faqs; let i = index">
+        <div class="faq-question">
+          <h3>{{ faq.question }}</h3>
+          <span class="material-icons">help_outline</span>
+        </div>
+        <div class="faq-answer">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Media Section -->
+  <div class="social-section">
+    <div class="social-content">
+      <h2>Sosyal Medyada Takip Edin</h2>
+      <p>Güncel haberler, ipuçları ve duyurular için bizi takip edin</p>
+      <div class="social-links">
+        <a 
+          *ngFor="let social of socialLinks" 
+          [href]="social.url" 
+          class="social-link"
+          [style.background]="social.color"
+          target="_blank"
+        >
+          <i [class]="social.icon"></i>
+          <span>{{ social.name }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+

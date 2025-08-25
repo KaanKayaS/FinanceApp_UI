@@ -1,13 +1,49 @@
 <nav class="navbar">
+  <!-- Mobil profil menüsü için backdrop -->
+  <div class="profile-backdrop" 
+       *ngIf="isMobileView && isMobileMenuOpen" 
+       (click)="closeMobileMenu()"></div>
+       
   <div class="navbar-content">
-    <button class="menu-toggle" (click)="toggleMobileMenu()" *ngIf="isMobileView">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <a class="brand" routerLink="/">FinanceApp</a>
-    <div class="nav-actions" [class.mobile-menu-open]="isMobileMenuOpen">
+    <!-- Desktop Layout -->
+    <div class="desktop-layout">
+      <a class="brand" routerLink="/">
+        <img src="assets/navbar_logo.svg" alt="FinStats Logo" class="brand-logo" />
+        <span class="brand-text">FinStats</span>
+      </a>
+      <div class="nav-actions">
+        <div class="user-info" *ngIf="username">
+          <mat-icon class="user-icon">person</mat-icon>
+          <span class="user-name">Hoş geldiniz, {{ username }}</span>
+          <button class="btn-profile" routerLink="/profile">
+            <mat-icon>account_circle</mat-icon>
+            Profil
+          </button>
+        </div>
+        <button class="btn-logout" (click)="logout()">Çıkış Yap</button>
+      </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="mobile-layout" *ngIf="isMobileView">
+      <span class="mobile-brand-text" routerLink="/">FinStats</span>
+      <a routerLink="/" class="mobile-logo-link">
+        <img src="assets/navbar_logo.svg" alt="FinStats Logo" class="mobile-brand-logo" />
+      </a>
+      <button class="menu-toggle" (click)="toggleMobileMenu()">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Dropdown -->
+    <div class="nav-actions mobile-menu" [class.mobile-menu-open]="isMobileMenuOpen" *ngIf="isMobileView">
       <div class="user-info" *ngIf="username">
         <mat-icon class="user-icon">person</mat-icon>
         <span class="user-name">Hoş geldiniz, {{ username }}</span>
+        <button class="btn-profile" routerLink="/profile" (click)="closeMobileMenu()">
+          <mat-icon>account_circle</mat-icon>
+          Profil
+        </button>
       </div>
       <button class="btn-logout" (click)="logout()">Çıkış Yap</button>
     </div>

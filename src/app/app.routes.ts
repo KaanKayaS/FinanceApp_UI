@@ -9,6 +9,10 @@ import { CreateInstructionComponent } from './components/instructions/create-ins
 import { InstructionListComponent } from './components/instructions/instruction-list/instruction-list.component';
 import { CreateMembershipComponent } from './components/membership/create-membership/create-membership.component';
 import { SubscriptionListComponent } from './components/membership/subscription-list/subscription-list.component';
+import { CreateInvestmentPlanComponent } from './components/investment/create-investment-plan/create-investment-plan.component';
+import { InvestmentListComponent } from './components/investment/investment-list/investment-list.component';
+import { AboutComponent } from './components/about/about.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 export const routes: Routes = [
   {
@@ -72,6 +76,31 @@ export const routes: Routes = [
         title: 'Aboneliklerim'
       },
       {
+        path: 'investment/create',
+        component: CreateInvestmentPlanComponent,
+        title: 'Yatırım Planı Oluştur'
+      },
+      {
+        path: 'investment/list',
+        component: InvestmentListComponent,
+        title: 'Yatırım Planlarım'
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent),
+        title: 'Profil'
+      },
+      {
+        path: 'about',
+        component: AboutComponent,
+        title: 'Hakkımızda'
+      },
+      {
+        path: 'contact',
+        component: ContactComponent,
+        title: 'İletişim'
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
@@ -87,6 +116,16 @@ export const routes: Routes = [
     path: 'register',
     canActivate: [AuthLoginGuard],
     loadComponent: () => import('./components/register/register').then(m => m.RegisterComponent)
+  },
+  {
+    path: 'forgot-password',
+    canActivate: [AuthLoginGuard],
+    loadComponent: () => import('./components/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'reset-password',
+    canActivate: [AuthLoginGuard],
+    loadComponent: () => import('./components/reset-password/reset-password').then(m => m.ResetPasswordComponent)
   },
   {
     path: '**',

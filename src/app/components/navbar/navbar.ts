@@ -49,6 +49,10 @@ export class NavbarComponent implements OnInit {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
+  }
+
   shouldShowNavbar(): boolean {
     const currentRoute = this.router.url;
     return !currentRoute.includes('/login') && !currentRoute.includes('/register');

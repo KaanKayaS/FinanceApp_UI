@@ -2,24 +2,83 @@
   background-color: #2c3e50;
   color: white;
   width: 100%;
+  position: relative;
+  z-index: 1002;
 
   .navbar-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 1rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+  }
+
+  // Desktop Layout
+  .desktop-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  // Mobile Layout
+  .mobile-layout {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+
+    .mobile-brand-text {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+      position: absolute;
+      left: 0;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #ecf0f1;
+      }
+    }
+
+    .mobile-logo-link {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-decoration: none;
+      
+      .mobile-brand-logo {
+        height: 50px;
+        width: auto;
+        transition: transform 0.3s ease;
+        filter: brightness(1.2);
+        display: block;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .menu-toggle {
+      margin-left: auto;
+    }
   }
 
   .menu-toggle {
     display: none;
-    background: none;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
     padding: 0.5rem;
     cursor: pointer;
     margin-right: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
 
     mat-icon {
       font-size: 24px;
@@ -27,13 +86,33 @@
   }
 
   .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 1.5rem;
     font-weight: bold;
     color: white;
     text-decoration: none;
+    transition: all 0.3s ease;
+    
+    .brand-logo {
+      height: 45px;
+      width: auto;
+      transition: transform 0.3s ease;
+      filter: brightness(1.2);
+    }
+    
+    .brand-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
     
     &:hover {
       color: #ecf0f1;
+      
+      .brand-logo {
+        transform: scale(1.1);
+      }
     }
   }
 
@@ -45,7 +124,7 @@
     .user-info {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
 
       .user-icon {
         color: #ecf0f1;
@@ -57,6 +136,31 @@
       .user-name {
         font-size: 1rem;
         color: #ecf0f1;
+      }
+
+      .btn-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        
+        &:hover {
+          background-color: #2980b9;
+        }
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
       }
     }
 
@@ -82,11 +186,21 @@
       padding: 1rem;
     }
 
+    // Hide desktop layout on mobile
+    .desktop-layout {
+      display: none;
+    }
+
+    // Show mobile layout
+    .mobile-layout {
+      display: flex;
+    }
+
     .menu-toggle {
       display: block;
     }
 
-    .nav-actions {
+    .nav-actions.mobile-menu {
       position: fixed;
       top: 64px;
       left: -100%;
@@ -96,7 +210,9 @@
       flex-direction: column;
       padding: 1rem;
       transition: left 0.3s ease;
-      z-index: 1000;
+      z-index: 1001;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
 
       &.mobile-menu-open {
         left: 0;
@@ -124,12 +240,21 @@
       padding: 0.75rem;
     }
 
-    .brand {
-      font-size: 1.2rem;
+    .mobile-layout {
+      .mobile-brand-text {
+        font-size: 1rem;
+      }
+
+      .mobile-logo-link {
+        .mobile-brand-logo {
+          height: 45px;
+        }
+      }
     }
 
-    .nav-actions {
+    .nav-actions.mobile-menu {
       top: 56px;
+      z-index: 1001;
 
       .user-info {
         .user-name {
@@ -143,4 +268,16 @@
       }
     }
   }
-} 
+}
+
+/* Profil menüsü backdrop */
+.profile-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  cursor: pointer;
+}

@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
-
-interface CreateExpenseRequest {
-  name: string;
-  amount: number;
-}
+import { ExpenseService } from '../../../services/expense.service';
 
 interface ErrorResponse {
   StatusCode: number;
@@ -31,12 +26,12 @@ export class AddExpenseComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private expenseService: ExpenseService,
     private router: Router
   ) {
     this.expenseForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      amount: ['', [Validators.required, Validators.min(0.01)]]
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(25)]],
+      amount: ['', [Validators.required, Validators.min(0.01), Validators.max(1000000)]]
     });
   }
 
@@ -47,19 +42,14 @@ export class AddExpenseComponent implements OnInit {
       this.isSubmitting = true;
       this.clearMessages();
 
-      const expenseData: CreateExpenseRequest = {
+      const expenseData = {
         name: this.expenseForm.value.name.trim(),
         amount: parseFloat(this.expenseForm.value.amount)
       };
 
       console.log('Gönderilen gider verisi:', expenseData);
 
-      this.http.post('http://localhost:5055/api/Expense/CreateExpense', expenseData, {
-        responseType: 'text',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      this.expenseService.createExpense(expenseData)
         .pipe(
           finalize(() => {
             this.isSubmitting = false;
@@ -94,26 +84,53 @@ export class AddExpenseComponent implements OnInit {
   private handleError(error: any) {
     this.clearMessages();
     
-    if (error.status === 500 || error.status === 400 || error.status === 422) {
+    console.error('Full error object:', error);
+    
+    // CORS veya network hatası
+    if (error.status === 0) {
+      this.errorMessage = 'Sunucuya bağlanılamadı. CORS hatası olabilir veya sunucu çalışmıyor olabilir.';
+      this.errorMessages = ['API URL: ' + error.url || 'Bilinmiyor'];
+    }
+    // Server hatası
+    else if (error.status === 500 || error.status === 400 || error.status === 422) {
       try {
-        const errorResponse: ErrorResponse = JSON.parse(error.error);
-        if (errorResponse.Errors && errorResponse.Errors.length > 0) {
-          this.errorMessages = errorResponse.Errors;
+        // String olarak gelen hata mesajını kontrol et
+        if (typeof error.error === 'string') {
+          try {
+            const errorResponse: ErrorResponse = JSON.parse(error.error);
+            if (errorResponse.Errors && errorResponse.Errors.length > 0) {
+              this.errorMessages = errorResponse.Errors;
+              this.errorMessage = 'Aşağıdaki hatalar oluştu:';
+            } else {
+              this.errorMessage = 'Gider eklenirken bir hata oluştu.';
+            }
+          } catch (parseError) {
+            // JSON parse edilemezse raw string'i göster
+            this.errorMessage = 'Sunucu hatası: ' + error.error;
+          }
+        } else if (error.error && error.error.Errors) {
+          this.errorMessages = error.error.Errors;
           this.errorMessage = 'Aşağıdaki hatalar oluştu:';
         } else {
-          this.errorMessage = 'Gider eklenirken bir hata oluştu.';
+          this.errorMessage = `HTTP ${error.status}: ${error.statusText || 'Bilinmeyen hata'}`;
         }
       } catch (e) {
-        this.errorMessage = 'Gider eklenirken bir hata oluştu.';
+        this.errorMessage = `HTTP ${error.status}: Sunucu hatası`;
       }
-    } else {
-      this.errorMessage = 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.';
+    }
+    // Diğer HTTP hataları
+    else if (error.status) {
+      this.errorMessage = `HTTP ${error.status}: ${error.statusText || 'Bilinmeyen hata'}`;
+    }
+    // Genel hata
+    else {
+      this.errorMessage = 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.';
     }
 
-    // Hata mesajını 5 saniye sonra temizle
+    // Hata mesajını 8 saniye sonra temizle
     setTimeout(() => {
       this.clearMessages();
-    }, 5000);
+    }, 8000);
   }
 
   resetForm() {
@@ -125,6 +142,45 @@ export class AddExpenseComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
     this.errorMessages = [];
+  }
+
+  // Para maskelemesi fonksiyonları
+  onAmountInput(event: any): void {
+    const input = event.target;
+    let value = input.value.replace(/[^\d]/g, ''); // Sadece rakamları al
+    
+    if (value === '') {
+      this.expenseForm.patchValue({ amount: '' });
+      return;
+    }
+    
+    // Sayısal değeri form'a kaydet
+    const numericValue = parseInt(value);
+    this.expenseForm.patchValue({ amount: numericValue });
+    
+    // Binlik ayırıcı ile formatla ve input'a yaz
+    input.value = this.formatCurrency(numericValue);
+  }
+
+  formatCurrency(value: number): string {
+    // Türkiye formatında binlik ayırıcı (nokta) kullan
+    return value.toLocaleString('tr-TR');
+  }
+
+  onAmountFocus(event: any): void {
+    const input = event.target;
+    // Focus edildiğinde sadece rakamları göster
+    if (this.expenseForm.get('amount')?.value) {
+      input.value = this.expenseForm.get('amount')?.value.toString();
+    }
+  }
+
+  onAmountBlur(event: any): void {
+    const input = event.target;
+    // Blur olduğunda formatlanmış halini göster
+    if (this.expenseForm.get('amount')?.value) {
+      input.value = this.formatCurrency(this.expenseForm.get('amount')?.value);
+    }
   }
 
   private markFormGroupTouched() {

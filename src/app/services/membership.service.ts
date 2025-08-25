@@ -133,7 +133,7 @@ export class MembershipService {
     );
   }
 
-  removeMembership(id: number): Observable<any> {
+  removeMembership(digitalPlatformId: number): Observable<any> {
     const currentUser = this.authService.currentUserValue;
     
     const headers = new HttpHeaders().set(
@@ -142,7 +142,7 @@ export class MembershipService {
     );
 
     return this.http.put(
-      `${environment.apiUrl}/Membership/RemoveMembership?id=${id}`,
+      `${environment.apiUrl}/Membership/RemoveMembership?id=${digitalPlatformId}`,
       null, // PUT request body yok
       { 
         headers,

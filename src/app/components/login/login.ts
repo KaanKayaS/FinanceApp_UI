@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import { InstructionService } from '../../services/instruction.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +23,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private instructionService: InstructionService,
     private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
@@ -56,6 +59,8 @@ export class LoginComponent {
       next: (response) => {
         this.router.navigate(['/home']).then(() => {
           this.loading = false;
+          // Login başarılı olduktan sonra günlük talimatları kontrol et
+          this.checkTodayInstructions();
         });
       },
       error: (error: HttpErrorResponse) => {
@@ -79,6 +84,55 @@ export class LoginComponent {
 
         this.loginForm.get('password')?.reset();
       }
+    });
+  }
+
+  private checkTodayInstructions(): void {
+    this.instructionService.getTodayInstructions().subscribe({
+      next: (instructions) => {
+        if (instructions && instructions.length > 0) {
+          this.showTodayInstructionsAlert(instructions);
+        }
+      },
+      error: (error) => {
+        console.error('Günlük talimatlar getirilemedi:', error);
+        // Hata durumunda alert gösterme, sessizce geç
+      }
+    });
+  }
+
+  private showTodayInstructionsAlert(instructions: any[]): void {
+    // Talimat başlıkları ve tutarlarını birleştir
+    const instructionList = instructions.map(instruction => 
+      `• ${instruction.title}: ₺${instruction.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}`
+    ).join('<br>');
+
+    const totalAmount = instructions.reduce((sum, instruction) => sum + instruction.amount, 0);
+
+    Swal.fire({
+      title: '📋 Bugünkü Talimatlarınız',
+      html: `
+        <div style="text-align: left; margin-top: 15px;">
+          ${instructionList}
+        </div>
+        <hr style="margin: 15px 0;">
+        <div style="font-weight: bold; color: #2563eb; font-size: 16px;">
+          Toplam: ₺${totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+        </div>
+      `,
+      icon: 'info',
+      confirmButtonText: 'Anladım',
+      confirmButtonColor: '#2563eb',
+      background: '#ffffff',
+      customClass: {
+        popup: 'swal2-show',
+        title: 'swal2-title',
+        htmlContainer: 'swal2-html-container'
+      },
+      backdrop: true,
+      allowOutsideClick: true,
+      timer: undefined, // Manuel kapatma
+      width: window.innerWidth <= 480 ? '90%' : '500px'
     });
   }
 }

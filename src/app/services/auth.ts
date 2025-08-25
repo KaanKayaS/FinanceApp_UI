@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
+import { AiChatService } from './ai-chat.service';
 
 export interface TokenResponse {
   accessToken: string;
@@ -27,7 +28,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private aiChatService: AiChatService
   ) {
     this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
     this.currentUser = this.currentUserSubject.asObservable();
@@ -84,11 +86,17 @@ export class AuthService {
           
           console.log('Oluşturulan kullanıcı detayları:', userWithDetails);
           
-          if (isPlatformBrowser(this.platformId)) {
-            localStorage.setItem('currentUser', JSON.stringify(userWithDetails));
-            console.log('Kullanıcı localStorage\'a kaydedildi');
-          }
-          this.currentUserSubject.next(userWithDetails);
+                     if (isPlatformBrowser(this.platformId)) {
+             localStorage.setItem('currentUser', JSON.stringify(userWithDetails));
+             console.log('Kullanıcı localStorage\'a kaydedildi');
+             // AI chat service'inin haberdar olması için storage event tetikle
+             window.dispatchEvent(new StorageEvent('storage', {
+               key: 'currentUser',
+               newValue: JSON.stringify(userWithDetails),
+               oldValue: null
+             }));
+           }
+           this.currentUserSubject.next(userWithDetails);
           return userWithDetails;
         }),
         catchError(error => {
@@ -152,20 +160,52 @@ export class AuthService {
       tap({
         next: () => {
           console.log('Çıkış başarılı');
+          
+          // AI chat bağlantısını temizle
+          this.aiChatService.disconnect();
+          
           if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem('currentUser');
+            // AI chat service'inin haberdar olması için storage event tetikle
+            window.dispatchEvent(new StorageEvent('storage', {
+              key: 'currentUser',
+              newValue: null,
+              oldValue: localStorage.getItem('currentUser')
+            }));
           }
           this.currentUserSubject.next(null);
         },
         error: (hata) => {
           console.error('Çıkış hatası:', hata);
+          
+          // AI chat bağlantısını temizle
+          this.aiChatService.disconnect();
+          
           // Hata durumunda da temizleyelim
           if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem('currentUser');
+            // AI chat service'inin haberdar olması için storage event tetikle
+            window.dispatchEvent(new StorageEvent('storage', {
+              key: 'currentUser',
+              newValue: null,
+              oldValue: localStorage.getItem('currentUser')
+            }));
           }
           this.currentUserSubject.next(null);
         }
       })
     );
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Auth/ForgotPassword`, { email }, { responseType: 'text' });
+  }
+
+  resetPassword(email: string, token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Auth/ResetPassword`, {
+      email,
+      token,
+      newPassword
+    }, { responseType: 'text' });
   }
 }

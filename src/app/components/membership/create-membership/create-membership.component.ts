@@ -9,6 +9,7 @@ import { CreditCard } from '../../../models/credit-card';
 import { CreateMembershipRequest, SubscriptionType } from '../../../models/membership';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+// import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-create-membership',
@@ -142,19 +143,11 @@ export class CreateMembershipComponent implements OnInit {
         cleanPath = cleanPath.substring(1);
       }
 
-      // Multiple URL patterns to try
-      const possibleUrls = [
-        `http://localhost:5055/${cleanPath}`,                    // Current
-        `http://localhost:5055/api/files/${cleanPath}`,          // API endpoint
-        `http://localhost:5055/api/${cleanPath}`,                // API with path
-        `http://localhost:5055/wwwroot/${cleanPath}`,            // wwwroot
-        `http://localhost:5055/uploads/${cleanPath}`,            // uploads folder
-      ];
-
-      console.log('Platform:', platform.name, 'Trying URLs:', possibleUrls);
+      // Canlı ortam için direkt URL
+      const finalUrl = `https://api.finstats.net/${cleanPath}`;
+      console.log('Platform:', platform.name, 'Image URL:', finalUrl);
       
-      // For now return the first one, we'll implement fallback later
-      return possibleUrls[0];
+      return finalUrl;
     }
     console.log('Platform:', platform.name, 'No image path, using default');
     return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI0Y4RjlGQSIvPgo8cGF0aCBkPSJNMTYgMjJDMTkuMzEzNyAyMiAyMiAxOS4zMTM3IDIyIDE2QzIyIDEyLjY4NjMgMTkuMzEzNyAxMCAxNiAxMEMxMi42ODYzIDEwIDEwIDEyLjY4NjMgMTAgMTZDMTAgMTkuMzEzNyAxMi42ODYzIDIyIDE2IDIyWiIgZmlsbD0iIzZDNzU3RCIvPgo8L3N2Zz4K'; // SVG placeholder
@@ -311,5 +304,16 @@ export class CreateMembershipComponent implements OnInit {
     const selectedId = this.membershipForm.get('digitalPlatformId')?.value;
     if (!selectedId) return null;
     return this.digitalPlatforms.find(platform => platform.id == selectedId) || null;
+  }
+
+  getSelectedCard(): CreditCard | null {
+    const selectedId = this.membershipForm.get('creditCardId')?.value;
+    if (!selectedId) return null;
+    return this.creditCards.find(card => card.cardId == selectedId) || null;
+  }
+
+  hasInsufficientFunds(): boolean {
+    const selectedCard = this.getSelectedCard();
+    return selectedCard ? (selectedCard.balance < (this.planPrice || 0)) : false;
   }
 } 

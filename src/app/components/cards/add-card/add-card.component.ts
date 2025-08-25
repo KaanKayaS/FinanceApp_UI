@@ -39,6 +39,7 @@ export class AddCardComponent {
       nameOnCard: ['', [
         Validators.required,
         Validators.minLength(3),
+        Validators.maxLength(25),
         Validators.pattern(/^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/)
       ]]
     });
@@ -86,6 +87,12 @@ export class AddCardComponent {
 
   formatCardNumber(event: any) {
     let value = event.target.value.replace(/\s/g, '').replace(/\D/g, '');
+    
+    // 16 haneden fazla girilmesini engelle
+    if (value.length > 16) {
+      value = value.substring(0, 16);
+    }
+    
     if (value.length > 0) {
       value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
     }
@@ -124,6 +131,25 @@ export class AddCardComponent {
     });
   }
 
+  // Kart önizlemesi için formatlanmış kart numarası
+  get formattedCardNumber(): string {
+    const cardNo = this.cardForm.get('cardNo')?.value || '';
+    if (!cardNo) return '**** **** **** ****';
+    
+    // Eğer 16 haneli tam sayı varsa formatla
+    const cleanCardNo = cardNo.replace(/\s/g, '');
+    if (cleanCardNo.length === 16) {
+      return cleanCardNo.replace(/(\d{4})/g, '$1 ').trim();
+    }
+    
+    // Henüz tamamlanmamışsa girilen kısmı göster, kalanını * ile doldur
+    const formatted = cleanCardNo.replace(/(\d{4})/g, '$1 ').trim();
+    const remaining = '*'.repeat(16 - cleanCardNo.length);
+    const remainingFormatted = remaining.replace(/(\*{4})/g, '$1 ').trim();
+    
+    return (formatted + ' ' + remainingFormatted).substring(0, 19);
+  }
+
   getErrorMessage(controlName: string): string {
     const control = this.cardForm.get(controlName);
     if (!control || !control.errors || !control.touched) return '';
@@ -144,8 +170,9 @@ export class AddCardComponent {
         if (errors['pattern']) return 'Geçerli bir CVV giriniz (3 haneli)';
         break;
       case 'nameOnCard':
-        if (errors['required']) return 'Kart üzerindeki isim gereklidir';
+        if (errors['required']) return 'Kart üzerindeki isim boş olamaz.';
         if (errors['minlength']) return 'İsim en az 3 karakter olmalıdır';
+        if (errors['maxlength']) return 'Kart üzerindeki isim en fazla 25 karakter olabilir.';
         if (errors['pattern']) return 'İsim sadece harf içerebilir';
         break;
     }

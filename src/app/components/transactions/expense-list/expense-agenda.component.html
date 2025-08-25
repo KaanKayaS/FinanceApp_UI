@@ -55,18 +55,32 @@
                         formControlName="name"
                         class="form-control"
                         placeholder="Gider adını girin"
+                        maxlength="25"
+                        [class.invalid]="editForm.get('name')?.invalid && editForm.get('name')?.touched"
                     >
+                    <div class="error-text" *ngIf="editForm.get('name')?.invalid && editForm.get('name')?.touched">
+                        <span *ngIf="editForm.get('name')?.errors?.['required']">Lütfen isim alanını doldurunuz</span>
+                        <span *ngIf="editForm.get('name')?.errors?.['minlength']">Gider adı en az 4 karakter olmalıdır</span>
+                        <span *ngIf="editForm.get('name')?.errors?.['maxlength']">Gider adı en fazla 25 karakter olabilir</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="expenseAmount">Tutar (₺)</label>
                     <input 
-                        type="number" 
+                        type="text" 
                         id="expenseAmount"
-                        formControlName="amount"
-                        class="form-control"
-                        step="0.01"
                         placeholder="Tutarı girin"
+                        class="form-control"
+                        (input)="onAmountInput($event)"
+                        (focus)="onAmountFocus($event)"
+                        (blur)="onAmountBlur($event)"
+                        [class.invalid]="editForm.get('amount')?.invalid && editForm.get('amount')?.touched"
                     >
+                    <div class="error-text" *ngIf="editForm.get('amount')?.invalid && editForm.get('amount')?.touched">
+                        <span *ngIf="editForm.get('amount')?.errors?.['required']">Lütfen fiyat alanını doldurunuz</span>
+                        <span *ngIf="editForm.get('amount')?.errors?.['min']">Tutar 0'dan büyük olmalıdır</span>
+                        <span *ngIf="editForm.get('amount')?.errors?.['max']">Fiyat değeri 1.000.000'dan küçük olmalıdır.</span>
+                    </div>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" (click)="closeEditModal()">

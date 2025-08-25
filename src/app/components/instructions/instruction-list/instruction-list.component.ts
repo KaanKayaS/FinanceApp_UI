@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { Instruction } from '../../../models/instruction';
 import { InstructionService } from '../../../services/instruction.service';
 import Swal from 'sweetalert2';
@@ -27,7 +26,6 @@ export class InstructionListComponent implements OnInit {
   errorMessage: string = '';
 
   constructor(
-    private http: HttpClient,
     private instructionService: InstructionService
   ) {}
 
@@ -40,7 +38,7 @@ export class InstructionListComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.http.get<Instruction[]>('http://localhost:5055/api/Instruction/GetAllInstruction')
+    this.instructionService.getAllInstructions()
       .subscribe({
         next: (data) => {
           this.instructions = data;
@@ -48,14 +46,14 @@ export class InstructionListComponent implements OnInit {
         },
         error: (error) => {
           console.error('Talimatlar yüklenirken hata oluştu:', error);
-          this.errorMessage = 'Talimatlar yüklenirken bir hata oluştu.';
+          this.handleError(error, 'Talimatlar yüklenirken bir hata oluştu.');
           this.isLoading = false;
         }
       });
   }
 
   loadInstructionStats() {
-    this.http.get<InstructionStats>('http://localhost:5055/api/Instruction/GetInstructionCount')
+    this.instructionService.getInstructionStats()
       .subscribe({
         next: (data) => {
           this.stats = data;
@@ -117,39 +115,79 @@ export class InstructionListComponent implements OnInit {
   }
 
   markAsPaid(instruction: Instruction) {
-    if (confirm(`"${instruction.title}" talimatını ödendi olarak işaretlemek istediğinizden emin misiniz?`)) {
-      this.instructionService.markAsPaid(instruction.id).subscribe({
-        next: (response) => {
-          instruction.isPaid = true;
-          this.loadInstructionStats();
-          
-          // Success mesajını göster ve 2 saniye sonra sayfayı yenile
-          Swal.fire({
-            title: 'Başarılı!',
-            text: response || 'Talimatınız ödendi olarak işaretlendi',
-            icon: 'success',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            willClose: () => {
-              // 2 saniye sonra sayfayı yenile
-              window.location.reload();
+    Swal.fire({
+      title: 'Ödendi olarak işaretle',
+      text: `"${instruction.title}" talimatını ödendi olarak işaretlemek istediğinizden emin misiniz?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Evet, Ödendi!',
+      cancelButtonText: 'İptal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Loading göster
+        Swal.fire({
+          title: 'İşleniyor...',
+          text: 'Talimat ödendi olarak işaretleniyor',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        this.instructionService.markAsPaid(instruction.id).subscribe({
+          next: (response) => {
+            instruction.isPaid = true;
+            this.loadInstructionStats();
+            
+            // Success mesajını göster ve 2 saniye sonra sayfayı yenile
+            Swal.fire({
+              title: 'Başarılı!',
+              text: response || 'Talimatınız ödendi olarak işaretlendi',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+              allowOutsideClick: false,
+              willClose: () => {
+                // 2 saniye sonra sayfayı yenile
+                window.location.reload();
+              }
+            });
+          },
+          error: (error) => {
+            console.error('Talimat güncellenirken hata oluştu:', error);
+            
+            let errorMessage = 'Talimat güncellenirken bir hata oluştu.';
+            
+            // Error mesajını parse et
+            if (error.status === 500) {
+              if (error.error && typeof error.error === 'string') {
+                errorMessage = error.error;
+              } else if (error.message) {
+                errorMessage = error.message;
+              }
+            } else if (error.status === 400) {
+              errorMessage = 'Geçersiz işlem. Bu talimat zaten ödenmiş olabilir.';
+            } else if (error.status === 401) {
+              errorMessage = 'Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.';
+            } else if (error.status === 404) {
+              errorMessage = 'Talimat bulunamadı. Zaten silinmiş olabilir.';
+            } else if (error.status === 0) {
+              errorMessage = 'Sunucuya bağlanamıyor. İnternet bağlantınızı kontrol edin.';
             }
-          });
-        },
-        error: (error) => {
-          console.error('Talimat güncellenirken hata oluştu:', error);
-          
-          Swal.fire({
-            title: 'Hata!',
-            text: 'Talimat güncellenirken bir hata oluştu.',
-            icon: 'error',
-            confirmButtonText: 'Tamam'
-          });
-        }
-      });
-    }
+            
+            Swal.fire({
+              title: 'Hata!',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: 'Tamam'
+            });
+          }
+        });
+      }
+    });
   }
 
   deleteInstruction(instruction: Instruction) {
@@ -228,6 +266,11 @@ export class InstructionListComponent implements OnInit {
     const isGroupInstruction = instruction.groupId !== null && instruction.groupId !== undefined;
     const modalTitle = isGroupInstruction ? 'Grup Talimatı Düzenle' : 'Talimat Düzenle';
     
+    // Tutar formatını maskelemek için
+    const formatCurrencyForInput = (value: number): string => {
+      return value.toLocaleString('tr-TR');
+    };
+    
     Swal.fire({
       title: modalTitle,
       html: `
@@ -240,12 +283,12 @@ export class InstructionListComponent implements OnInit {
           ` : ''}
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Başlık:</label>
-            <input id="swal-title" class="swal2-input" type="text" value="${instruction.title}" style="width: 100%; margin: 0;">
+            <input id="swal-title" class="swal2-input" type="text" value="${instruction.title}" maxlength="20" style="width: 100%; margin: 0;">
           </div>
           
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Tutar (₺):</label>
-            <input id="swal-amount" class="swal2-input" type="number" value="${instruction.amount}" min="0" step="0.01" style="width: 100%; margin: 0;">
+            <input id="swal-amount" class="swal2-input" type="text" value="${formatCurrencyForInput(instruction.amount)}" style="width: 100%; margin: 0;">
           </div>
           
           <div style="margin-bottom: 15px;">
@@ -255,7 +298,7 @@ export class InstructionListComponent implements OnInit {
           
           <div style="margin-bottom: 15px;">
             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Açıklama:</label>
-            <textarea id="swal-description" class="swal2-input" rows="3" style="width: 100%; margin: 0; resize: vertical;">${instruction.description || ''}</textarea>
+            <textarea id="swal-description" class="swal2-input" rows="3" maxlength="50" style="width: 100%; margin: 0; resize: vertical;">${instruction.description || ''}</textarea>
           </div>
         </div>
       `,
@@ -265,23 +308,109 @@ export class InstructionListComponent implements OnInit {
       confirmButtonColor: '#4f46e5',
       cancelButtonColor: '#6b7280',
       width: '500px',
+      didOpen: () => {
+        // Tutar input'una maskeleme özelliği ekle
+        const amountInput = document.getElementById('swal-amount') as HTMLInputElement;
+        
+        // Global rawAmount başlangıç değeri
+        (window as any).editInstructionRawAmount = instruction.amount;
+        
+        amountInput.addEventListener('input', (event: any) => {
+          const input = event.target;
+          let value = input.value.replace(/[^\d]/g, ''); // Sadece rakamları al
+          
+          if (value === '') {
+            (window as any).editInstructionRawAmount = 0;
+            input.value = '';
+            return;
+          }
+          
+          const rawAmount = parseInt(value);
+          (window as any).editInstructionRawAmount = rawAmount; // Global değeri güncelle
+          input.value = formatCurrencyForInput(rawAmount);
+        });
+        
+        amountInput.addEventListener('focus', () => {
+          // Focus edildiğinde sadece rakamları göster
+          const currentRawAmount = (window as any).editInstructionRawAmount || 0;
+          if (currentRawAmount > 0) {
+            amountInput.value = currentRawAmount.toString();
+          }
+        });
+        
+        amountInput.addEventListener('blur', () => {
+          // Blur olduğunda formatlanmış halini göster
+          const currentRawAmount = (window as any).editInstructionRawAmount || 0;
+          if (currentRawAmount > 0) {
+            amountInput.value = formatCurrencyForInput(currentRawAmount);
+          }
+        });
+      },
       preConfirm: () => {
         const title = (document.getElementById('swal-title') as HTMLInputElement).value;
-        const amount = parseFloat((document.getElementById('swal-amount') as HTMLInputElement).value);
+        const amountInput = (document.getElementById('swal-amount') as HTMLInputElement);
         const scheduledDate = (document.getElementById('swal-date') as HTMLInputElement).value;
         const description = (document.getElementById('swal-description') as HTMLTextAreaElement).value;
+        
+        // Raw amount'u al
+        const amount = (window as any).editInstructionRawAmount || 0;
+        
+        // Debug için console.log ekle
+        console.log('Edit instruction preConfirm values:', {
+          title: title.trim(),
+          amount: amount,
+          originalAmount: instruction.amount,
+          scheduledDate: scheduledDate,
+          description: description.trim()
+        });
 
+        // Backend validation kurallarına uygun validasyonlar
         if (!title.trim()) {
-          Swal.showValidationMessage('Başlık boş olamaz');
+          Swal.showValidationMessage('Başlık boş olamaz.');
           return false;
         }
-        if (!amount || amount <= 0) {
-          Swal.showValidationMessage('Geçerli bir tutar giriniz');
+        if (title.trim().length < 4) {
+          Swal.showValidationMessage('Başlık en az 4 karakter olmalıdır.');
+          return false;
+        }
+        if (title.trim().length > 20) {
+          Swal.showValidationMessage('Başlık en fazla 20 karakter olmalıdır.');
+          return false;
+        }
+        if (!amount || amount < 1) {
+          Swal.showValidationMessage('Tutar 0\'dan büyük olmalıdır.');
+          return false;
+        }
+        if (amount > 1000000) {
+          Swal.showValidationMessage('Fiyat değeri 1.000.000\'dan küçük olmalıdır.');
           return false;
         }
         if (!scheduledDate) {
           Swal.showValidationMessage('Tarih seçiniz');
           return false;
+        }
+        
+        // Gelecek tarih kontrolü
+        const selectedDate = new Date(scheduledDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+        
+        if (selectedDate <= today) {
+          Swal.showValidationMessage('Planlanan tarih bugünden sonra olmalıdır.');
+          return false;
+        }
+        
+        // Açıklama validasyonu (isteğe bağlı ama doldurulursa kurallar var)
+        if (description.trim().length > 0) {
+          if (description.trim().length < 4) {
+            Swal.showValidationMessage('Açıklama en az 4 karakter olmalıdır.');
+            return false;
+          }
+          if (description.trim().length > 50) {
+            Swal.showValidationMessage('Açıklama en fazla 50 karakter olmalıdır.');
+            return false;
+          }
         }
 
         return {
@@ -337,5 +466,35 @@ export class InstructionListComponent implements OnInit {
         });
       }
     });
+  }
+
+  private handleError(error: any, defaultMessage: string) {
+    console.error('Full error object:', error);
+    
+    // CORS veya network hatası
+    if (error.status === 0) {
+      this.errorMessage = 'Sunucuya bağlanılamadı. CORS hatası olabilir veya sunucu çalışmıyor olabilir.';
+    }
+    // Server hatası
+    else if (error.status === 500 || error.status === 400 || error.status === 422) {
+      if (typeof error.error === 'string') {
+        this.errorMessage = 'Sunucu hatası: ' + error.error;
+      } else {
+        this.errorMessage = `HTTP ${error.status}: ${error.statusText || 'Bilinmeyen hata'}`;
+      }
+    }
+    // Diğer HTTP hataları
+    else if (error.status) {
+      this.errorMessage = `HTTP ${error.status}: ${error.statusText || 'Bilinmeyen hata'}`;
+    }
+    // Genel hata
+    else {
+      this.errorMessage = defaultMessage;
+    }
+
+    // Hata mesajını 5 saniye sonra temizle
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 5000);
   }
 } 

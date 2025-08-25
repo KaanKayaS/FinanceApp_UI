@@ -11,7 +11,8 @@
     <div class="message error" *ngIf="errorMessage">
         <i class="fas fa-exclamation-circle"></i>
         <div>
-            <div *ngFor="let error of errorMessages">{{ error }}</div>
+            <div>{{ errorMessage }}</div>
+            <div *ngFor="let error of errorMessages" class="error-detail">• {{ error }}</div>
         </div>
     </div>
 
@@ -29,11 +30,13 @@
                     formControlName="name"
                     class="form-control"
                     placeholder="Gider adını girin (örn: Elektrik Faturası)"
+                    maxlength="25"
                     [class.invalid]="expenseForm.get('name')?.invalid && expenseForm.get('name')?.touched"
                 >
                 <div class="error-text" *ngIf="expenseForm.get('name')?.invalid && expenseForm.get('name')?.touched">
-                    <span *ngIf="expenseForm.get('name')?.errors?.['required']">Gider adı zorunludur</span>
-                    <span *ngIf="expenseForm.get('name')?.errors?.['minlength']">Gider adı en az 2 karakter olmalıdır</span>
+                    <span *ngIf="expenseForm.get('name')?.errors?.['required']">Lütfen isim alanını doldurunuz</span>
+                    <span *ngIf="expenseForm.get('name')?.errors?.['minlength']">Gider adı en az 3 karakter olmalıdır</span>
+                    <span *ngIf="expenseForm.get('name')?.errors?.['maxlength']">Gider adı en fazla 25 karakter olabilir</span>
                 </div>
             </div>
 
@@ -43,17 +46,19 @@
                     Tutar (₺) *
                 </label>
                 <input 
-                    type="number" 
+                    type="text" 
                     id="expenseAmount"
-                    formControlName="amount"
-                    class="form-control"
-                    step="0.01"
                     placeholder="Tutarı girin"
+                    class="form-control"
+                    (input)="onAmountInput($event)"
+                    (focus)="onAmountFocus($event)"
+                    (blur)="onAmountBlur($event)"
                     [class.invalid]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched"
                 >
                 <div class="error-text" *ngIf="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched">
-                    <span *ngIf="expenseForm.get('amount')?.errors?.['required']">Tutar zorunludur</span>
+                    <span *ngIf="expenseForm.get('amount')?.errors?.['required']">Lütfen fiyat alanını doldurunuz</span>
                     <span *ngIf="expenseForm.get('amount')?.errors?.['min']">Tutar 0'dan büyük olmalıdır</span>
+                    <span *ngIf="expenseForm.get('amount')?.errors?.['max']">Fiyat değeri 1.000.000'dan küçük olmalıdır.</span>
                 </div>
             </div>
 

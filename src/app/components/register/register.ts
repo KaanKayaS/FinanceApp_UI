@@ -19,6 +19,7 @@ export class RegisterComponent {
   registerForm!: FormGroup;
   loading = false;
   errorMessage = '';
+  successMessage = '';
   showPassword = false;
   showConfirmPassword = false;
 
@@ -99,12 +100,18 @@ export class RegisterComponent {
 
     this.loading = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     this.authService.register(registerData).subscribe({
       next: (response: string) => {
         console.log('Kayıt başarılı:', response);
         this.loading = false;
-        this.router.navigate(['/login']);
+        this.successMessage = response;
+        
+        // 3 saniye sonra login sayfasına yönlendir
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 3000);
       },
       error: (error: HttpErrorResponse) => {
         this.loading = false;

@@ -22,7 +22,20 @@
     <span>{{ success }}</span>
   </div>
 
-  <form [formGroup]="balanceForm" (ngSubmit)="onSubmit()" class="balance-form" *ngIf="!loading">
+  <!-- Kart yoksa Kart Ekle butonu göster -->
+  <div class="no-cards-container" *ngIf="!loading && cards.length === 0">
+    <div class="no-cards-message">
+      <i class="fas fa-credit-card"></i>
+      <h3>Henüz kartınız bulunmuyor</h3>
+      <p>Bakiye yüklemek için önce bir kart eklemeniz gerekiyor.</p>
+      <button class="add-card-button" (click)="goToAddCard()">
+        <i class="fas fa-plus"></i>
+        Kart Ekle
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="balanceForm" (ngSubmit)="onSubmit()" class="balance-form" *ngIf="!loading && cards.length > 0">
     <div class="form-section">
       <label>Kart Seçin</label>
       <div class="cards-list">
@@ -53,18 +66,46 @@
     <div class="form-section">
       <label for="balance">Yüklenecek Tutar</label>
       <div class="balance-input">
-        <input type="number" 
+        <input type="text" 
                id="balance" 
-               formControlName="balance" 
-               placeholder="0.00"
-               [min]="1"
-               [max]="100000">
+               placeholder="0"
+               (input)="onBalanceInput($event)"
+               (focus)="onBalanceFocus($event)"
+               (blur)="onBalanceBlur($event)">
         <span class="currency">₺</span>
       </div>
       <div class="error-text" *ngIf="balanceForm.get('balance')?.touched && balanceForm.get('balance')?.errors">
         <span *ngIf="balanceForm.get('balance')?.errors?.['required']">Lütfen yüklenecek tutarı girin</span>
-        <span *ngIf="balanceForm.get('balance')?.errors?.['min']">En az 1₺ yükleyebilirsiniz</span>
-        <span *ngIf="balanceForm.get('balance')?.errors?.['max']">En fazla 100.000₺ yükleyebilirsiniz</span>
+        <span *ngIf="balanceForm.get('balance')?.errors?.['min']">Yüklenecek bakiye 0'dan büyük olmalıdır.</span>
+        <span *ngIf="balanceForm.get('balance')?.errors?.['max']">Yüklenecek bakiye en fazla 1.000.000 TL olabilir.</span>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label for="category">Gelir Kategorisi</label>
+      <select id="category" formControlName="category" class="category-select">
+        <option *ngFor="let option of categoryOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+      <div class="error-text" *ngIf="balanceForm.get('category')?.touched && balanceForm.get('category')?.invalid">
+        Lütfen bir kategori seçin
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label for="name">Açıklama (İsteğe Bağlı)</label>
+      <input type="text" 
+             id="name" 
+             formControlName="name" 
+             placeholder="Örn: Ocak maaşı, Freelance proje ödemesi..."
+             maxlength="30">
+      <div class="error-text" *ngIf="balanceForm.get('name')?.touched && balanceForm.get('name')?.errors">
+        <span *ngIf="balanceForm.get('name')?.errors?.['minlength']">Açıklama en az 3 karakter olmalıdır</span>
+        <span *ngIf="balanceForm.get('name')?.errors?.['maxlength']">Açıklama en fazla 30 karakter olabilir</span>
+      </div>
+      <div class="help-text">
+        Boş bırakılırsa "Para Yükleme" olarak kaydedilir
       </div>
     </div>
 

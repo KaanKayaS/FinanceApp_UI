@@ -18,14 +18,19 @@
   </div>
 
   <div class="transactions-list" *ngIf="!loading && !error && transactions.length > 0">
-    <div class="transaction-item" *ngFor="let transaction of transactions">
+    <div class="transaction-item" *ngFor="let transaction of transactions" [class]="getTransactionType(transaction)">
       <div class="transaction-header">
+        <div class="transaction-icon">
+          <i [class]="getTransactionIcon(transaction)"></i>
+        </div>
         <div class="platform-info">
           <span class="platform-name">{{ transaction.digitalPlatformName }}</span>
           <span class="subscription-plan" *ngIf="transaction.subscriptionPlanName">{{ transaction.subscriptionPlanName }}</span>
+          <span class="category-label">{{ getCategoryLabel(transaction.addBalanceCategory) }}</span>
         </div>
-        <div class="amount" [class.deposit]="!transaction.subscriptionPlanName" [class.payment]="transaction.subscriptionPlanName">
-          <i class="fas" [class.fa-plus-circle]="!transaction.subscriptionPlanName" [class.fa-minus-circle]="transaction.subscriptionPlanName"></i>
+        <div class="amount" [class]="getTransactionType(transaction)">
+          <span *ngIf="getTransactionType(transaction) === 'income'">+</span>
+          <span *ngIf="getTransactionType(transaction) === 'expense'">-</span>
           {{ transaction.amount | number:'1.2-2' }} ₺
         </div>
       </div>

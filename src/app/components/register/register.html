@@ -5,7 +5,7 @@
       <p>Yeni hesabınızı oluşturun</p>
     </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" *ngIf="!successMessage">
       <!-- Full Name Field -->
       <div class="form-group">
         <label for="fullName">Kullanıcı Adı</label>
@@ -107,6 +107,12 @@
         {{errorMessage}}
       </div>
     </form>
+
+    <div class="success-message" *ngIf="successMessage">
+      <div class="success-icon">✓</div>
+      <div class="success-text">{{successMessage}}</div>
+      <div class="redirect-info">3 saniye sonra giriş sayfasına yönlendirileceksiniz...</div>
+    </div>
 
     <div class="register-footer">
       <p>Zaten hesabınız var mı? <a routerLink="/login">Giriş Yap</a></p>

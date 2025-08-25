@@ -1,0 +1,151 @@
+<div class="investment-list-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="back-button" (click)="goHome()">
+      <span class="material-icons">arrow_back</span>
+    </div>
+    <h1 class="page-title">
+      <span class="material-icons">savings</span>
+      Yatırım Planlarım
+    </h1>
+    <div class="header-actions">
+      <button class="create-button" (click)="createNewPlan()">
+        <span class="material-icons">add</span>
+        Yeni Plan
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <span class="material-icons spinning">refresh</span>
+    </div>
+    <p>Yatırım planlarınız yükleniyor...</p>
+  </div>
+
+  <!-- Investment Plans List -->
+  <div class="plans-container" *ngIf="!isLoading">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="investmentPlans.length === 0">
+      <span class="material-icons">savings</span>
+      <h3>Henüz yatırım planınız yok</h3>
+      <p>İlk yatırım planınızı oluşturarak hedeflerinize ulaşmaya başlayın!</p>
+      <button class="create-first-plan-button" (click)="createNewPlan()">
+        <span class="material-icons">add</span>
+        İlk Planımı Oluştur
+      </button>
+    </div>
+
+    <!-- Plans Grid -->
+    <div class="plans-grid" *ngIf="investmentPlans.length > 0">
+      <div 
+        class="plan-card" 
+        *ngFor="let plan of investmentPlans; trackBy: trackByPlanName"
+        [class.completed]="plan.isCompleted"
+      >
+        <!-- Card Header -->
+        <div class="card-header">
+          <div class="category-info">
+            <div class="category-icon">
+              <span class="material-icons">{{ getCategoryIcon(plan.investmentCategory) }}</span>
+            </div>
+            <div class="plan-info">
+              <h3 class="plan-name">{{ plan.name }}</h3>
+              <span class="category-label">{{ getCategoryLabel(plan.investmentCategory) }}</span>
+            </div>
+          </div>
+          <div class="plan-status">
+            <span class="status-badge" [class]="plan.isCompleted ? 'completed' : 'active'">
+              <span class="material-icons">{{ plan.isCompleted ? 'check_circle' : 'schedule' }}</span>
+              {{ plan.isCompleted ? 'Tamamlandı' : 'Aktif' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+          <div class="progress-info">
+            <div class="amounts">
+              <span class="current-amount">{{ formatPrice(plan.currentAmount) }}</span>
+              <span class="target-amount">/ {{ formatPrice(plan.targetPrice) }}</span>
+            </div>
+            <div class="progress-percentage">
+              {{ calculateProgress(plan).toFixed(1) }}%
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div 
+              class="progress-fill" 
+              [style.width.%]="calculateProgress(plan)"
+              [class]="getProgressColor(calculateProgress(plan))"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="details-section">
+          <div class="detail-item">
+            <span class="material-icons">schedule</span>
+            <span class="detail-label">Frekans:</span>
+            <span class="detail-value">{{ getFrequencyLabel(plan.investmentFrequency) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">payments</span>
+            <span class="detail-label">Ödeme:</span>
+            <span class="detail-value">{{ formatPrice(plan.perPaymentAmount) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="material-icons">event</span>
+            <span class="detail-label">Hedef Tarih:</span>
+            <span class="detail-value">{{ formatDate(plan.targetDate) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="!plan.isCompleted">
+            <span class="material-icons">hourglass_top</span>
+            <span class="detail-label">Kalan Süre:</span>
+            <span class="detail-value" [class]="getDaysLeftColor(plan.howManyDaysLeft)">
+              {{ plan.howManyDaysLeft }} gün
+            </span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="description-section" *ngIf="plan.description && plan.description.trim()">
+          <p class="description">{{ plan.description }}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-section">
+          <!-- Active Plan Actions -->
+          <ng-container *ngIf="!plan.isCompleted">
+            <button 
+              class="action-button primary" 
+              (click)="addMoney(plan)"
+            >
+              <span class="material-icons">add_circle</span>
+              Para Ekle
+            </button>
+            <button 
+              class="action-button secondary" 
+              (click)="cancelPlan(plan)"
+            >
+              <span class="material-icons">cancel</span>
+              Planı İptal Et
+            </button>
+          </ng-container>
+          
+          <!-- Completed Plan Actions -->
+          <ng-container *ngIf="plan.isCompleted">
+            <button 
+              class="action-button refund" 
+              (click)="refundPlan(plan)"
+            >
+              <span class="material-icons">account_balance_wallet</span>
+              Para İade Al
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

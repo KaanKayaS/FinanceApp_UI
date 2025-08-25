@@ -5,6 +5,7 @@ import { MembershipService } from '../../../services/membership.service';
 import { UserMembership } from '../../../models/membership';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+// import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-subscription-list',
@@ -57,7 +58,9 @@ export class SubscriptionListComponent implements OnInit {
       if (cleanPath.startsWith('/')) {
         cleanPath = cleanPath.substring(1);
       }
-      return `http://localhost:5055/${cleanPath}`;
+      
+      // Canlı ortam için direkt URL
+      return `https://api.finstats.net/${cleanPath}`;
     }
     return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iI0Y4RjlGQSIvPgo8cGF0aCBkPSJNMzIgNDJDMzYuNDE4MyA0MiA0MCAzOC40MTgzIDQwIDM0QzQwIDI5LjU4MTcgMzYuNDE4MyAyNiAzMiAyNkMyNy41ODE3IDI2IDI0IDI5LjU4MTcgMjQgMzRDMjQgMzguNDE4MyAyNy41ODE3IDQyIDMyIDQyWiIgZmlsbD0iIzZDNzU3RCIvPgo8L3N2Zz4K';
   }
@@ -130,7 +133,7 @@ export class SubscriptionListComponent implements OnInit {
         });
 
         // API çağrısı yap
-        this.membershipService.removeMembership(membership.id).subscribe({
+        this.membershipService.removeMembership(membership.digitalPlatformId).subscribe({
           next: (response) => {
             console.log('Abonelik iptal edildi:', response);
             
@@ -174,7 +177,7 @@ export class SubscriptionListComponent implements OnInit {
     this.router.navigate(['/membership/create']);
   }
 
-  trackByPlatform(index: number, membership: UserMembership): string {
-    return membership.digitalPlatformName;
+  trackByPlatform(index: number, membership: UserMembership): number {
+    return membership.digitalPlatformId;
   }
 } 

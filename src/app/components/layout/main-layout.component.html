@@ -1,13 +1,27 @@
 <div class="layout-container">
   <app-navbar></app-navbar>
+  
+  <!-- Mobil backdrop -->
+  <div class="mobile-backdrop" 
+       *ngIf="isMobileView && isSidebarOpen" 
+       (click)="closeSidebar()"></div>
+  
   <div class="content-wrapper">
     <!-- Menü Toggle Butonu -->
     <button class="menu-toggle" (click)="toggleSidebar()">
-      <i class="fas" [class.fa-times]="isSidebarOpen" [class.fa-bars]="!isSidebarOpen"></i>
+      <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar -->
-    <nav class="sidebar" [class.closed]="!isSidebarOpen">
+    <!-- Mobile Sidebar -->
+    <nav class="sidebar" [class.open]="isSidebarOpen" [class.mobile]="isMobileView">
+      <!-- Sidebar Header with Close Button -->
+      <div class="sidebar-header" *ngIf="isMobileView">
+        <h3>Menü</h3>
+        <button class="close-button" (click)="closeSidebar()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
       <div class="menu-group" *ngFor="let menu of menus">
         <div class="menu-header" (click)="toggleSubmenu(menu)">
           <span>{{ menu.name }}</span>
@@ -20,7 +34,8 @@
           <a *ngFor="let submenu of menu.children" 
              [routerLink]="submenu.url"
              routerLinkActive="active"
-             class="submenu-item">
+             class="submenu-item"
+             (click)="isMobileView && closeSidebar()">
             <i class="fas fa-angle-right"></i>
             <span>{{ submenu.name }}</span>
           </a>
@@ -29,8 +44,10 @@
     </nav>
 
     <!-- Ana İçerik -->
-    <main class="main-content" [class.expanded]="!isSidebarOpen">
-      <router-outlet></router-outlet>
+    <main class="main-content" [class.centered]="true">
+      <div class="content-container">
+        <router-outlet></router-outlet>
+      </div>
     </main>
   </div>
 </div> 

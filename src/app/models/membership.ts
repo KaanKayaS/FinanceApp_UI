@@ -11,7 +11,7 @@ export enum SubscriptionType {
 }
 
 export interface UserMembership {
-  id: number;
+  digitalPlatformId: number;
   digitalPlatformName: string;
   imagePath: string | null;
   subscriptionPlanName: string;

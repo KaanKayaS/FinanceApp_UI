@@ -39,6 +39,10 @@ export class MenuService {
       'Kart Ekle': '/cards/add',
       'Dijital Platform Aboneliği': '/membership/create',
       'Aboneliklerim': '/subscriptions',
+      'Yatırım Planı Oluştur': '/investment/create',
+      'Yatırım Planlarım': '/investment/list',
+      'Hakkımızda': '/about',
+      'İletişim': '/contact',
     };
 
     // Menülerin URL'lerini güncelle

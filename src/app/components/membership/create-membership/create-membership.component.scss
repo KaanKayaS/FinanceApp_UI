@@ -360,4 +360,101 @@
       }
     }
   }
+}
+
+// Card Info Section Styles
+.card-info-section {
+  margin-top: 24px;
+
+  .selected-card-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+
+    h4 {
+      margin: 0 0 16px 0;
+      color: #2c3e50;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #6c757d;
+
+      strong {
+        color: #2c3e50;
+        font-weight: 600;
+      }
+    }
+
+    .insufficient-funds-warning {
+      margin-top: 16px;
+      padding: 16px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+
+      .warning-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        i {
+          color: #dc2626;
+          font-size: 24px;
+          margin-top: 2px;
+        }
+
+        h5 {
+          margin: 0 0 8px 0;
+          color: #dc2626;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 4px 0;
+          color: #7f1d1d;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .sufficient-funds-info {
+      margin-top: 16px;
+      padding: 16px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+
+      .success-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        i {
+          color: #16a34a;
+          font-size: 20px;
+        }
+
+        p {
+          margin: 0;
+          color: #15803d;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Enhanced button styles for disabled state
+.btn-primary:disabled {
+  background-color: #9ca3af !important;
+  border-color: #9ca3af !important;
+  cursor: not-allowed;
+  opacity: 0.6;
 } 

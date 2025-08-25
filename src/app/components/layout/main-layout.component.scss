@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  position: relative;
 }
 
 .content-wrapper {
@@ -11,31 +12,49 @@
   position: relative;
 }
 
+// Mobil backdrop
+.mobile-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  cursor: pointer;
+}
+
 .menu-toggle {
   position: fixed;
-  left: 10px;
-  top: 70px;
-  z-index: 1000;
+  left: 16px;
+  top: 75px;
+  z-index: 1001;
   background: #2c3e50;
   border: none;
   color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 
   &:hover {
     background: #34495e;
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
 
   i {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 }
 
@@ -44,29 +63,120 @@
   background-color: #2c3e50;
   color: white;
   padding: 1rem;
-  padding-top: 4rem;
+  padding-top: 2rem;
+  padding-bottom: 6rem;
   overflow-y: auto;
   transition: all 0.3s ease;
   position: relative;
-  z-index: 900;
+  z-index: 999;
 
-  &.closed {
-    width: 0;
-    padding: 0;
-    opacity: 0;
+  // Desktop davranışı
+  &:not(.mobile) {
+    &:not(.open) {
+      width: 0;
+      padding: 0;
+      opacity: 0;
+    }
+  }
+
+  // Mobil davranışı
+  &.mobile {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100vh;
+    z-index: 999;
+    transition: left 0.3s ease;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    padding-top: 80px;
+
+    &.open {
+      left: 0;
+    }
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin: -80px -1rem 1.5rem -1rem;
+    padding-top: 100px;
+    position: relative;
+    z-index: 1003;
+
+    h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .close-button {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      i {
+        font-size: 1rem;
+      }
+    }
   }
 }
 
 .main-content {
   flex: 1;
-  padding: 1.5rem;
-  padding-left: 2rem;
   overflow-y: auto;
   background-color: #f8f9fa;
   transition: all 0.3s ease;
 
-  &.expanded {
-    margin-left: 0;
+  &.centered {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .content-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 1rem;
+    margin: 0 auto;
+
+    @media (min-width: 769px) {
+      padding: 1.5rem 2rem;
+    }
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+      padding-top: 90px; // Navbar ve menu toggle button için boşluk
+    }
+
+    @media (max-width: 430px) {
+      padding: 0.75rem;
+      padding-top: 85px;
+    }
   }
 }
 
@@ -80,19 +190,26 @@
     font-weight: 500;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
-    padding: 0.75rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.15);
+      background-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
 
     i {
       font-size: 0.9rem;
-      transition: transform 0.2s ease;
+      transition: transform 0.3s ease;
     }
   }
 
@@ -100,7 +217,7 @@
     max-height: 0;
     overflow: hidden;
     transition: all 0.3s ease;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
 
     &.expanded {
       max-height: 500px;
@@ -111,38 +228,171 @@
   .submenu-item {
     display: flex;
     align-items: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 1rem;
     margin: 0.25rem 0;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    border-radius: 10px;
+    transition: all 0.3s ease;
     font-size: 0.95rem;
+    border: 1px solid transparent;
 
     i {
       margin-right: 0.75rem;
       font-size: 0.8rem;
       opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    span {
+      font-weight: 400;
     }
 
     &:hover {
       color: white;
-      background-color: rgba(255, 255, 255, 0.1);
-      padding-left: 1rem;
+      background-color: rgba(255, 255, 255, 0.12);
+      transform: translateX(4px);
+      border-color: rgba(255, 255, 255, 0.1);
 
       i {
         opacity: 1;
+        color: #60a5fa;
       }
     }
 
     &.active {
       color: white;
-      background-color: rgba(255, 255, 255, 0.2);
-      padding-left: 1rem;
+      background-color: rgba(96, 165, 250, 0.2);
+      border-color: rgba(96, 165, 250, 0.3);
+      font-weight: 500;
 
       i {
         opacity: 1;
+        color: #60a5fa;
       }
+    }
+
+    &:active {
+      transform: translateX(2px);
+    }
+  }
+}
+
+// Mobil responsive düzenlemeler
+@media (max-width: 768px) {
+  .menu-toggle {
+    left: 12px;
+    top: 72px;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+  }
+
+  .sidebar {
+    &.mobile {
+      width: 90%;
+      max-width: 350px;
+      border-radius: 0 25px 25px 0;
+      
+      .sidebar-header {
+        padding: 1.25rem 1rem 1.75rem;
+        margin: -80px -1rem 1.5rem -1rem;
+        padding-top: 100px;
+        position: relative;
+        z-index: 1003;
+        
+        h3 {
+          font-size: 1.3rem;
+        }
+
+        .close-button {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+      }
+
+      .menu-group {
+        margin-bottom: 1.25rem;
+
+        .menu-header {
+          padding: 1rem;
+          font-size: 1.05rem;
+          border-radius: 14px;
+        }
+
+        .submenu-item {
+          padding: 0.8rem 1rem;
+          margin: 0.3rem 0;
+          border-radius: 12px;
+          font-size: 0.96rem;
+
+          i {
+            margin-right: 0.8rem;
+          }
+        }
+      }
+    }
+  }
+
+  .main-content {
+    .content-container {
+      padding-top: 95px;
+    }
+  }
+}
+
+// iPhone 13 ve benzeri boyutlar için özel düzenlemeler
+@media (max-width: 430px) {
+  .menu-toggle {
+    left: 10px;
+    top: 68px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .sidebar {
+    &.mobile {
+      width: 92%;
+      max-width: 300px;
+
+      .sidebar-header {
+        padding: 1rem 1rem 1.5rem;
+        
+        h3 {
+          font-size: 1.2rem;
+        }
+
+        .close-button {
+          width: 36px;
+          height: 36px;
+        }
+      }
+
+      .menu-group {
+        margin-bottom: 1rem;
+
+        .menu-header {
+          padding: 0.875rem 0.875rem;
+          font-size: 1rem;
+        }
+
+        .submenu-item {
+          padding: 0.7rem 0.875rem;
+          font-size: 0.94rem;
+        }
+      }
+    }
+  }
+
+  .main-content {
+    .content-container {
+      padding-top: 88px;
     }
   }
 } 

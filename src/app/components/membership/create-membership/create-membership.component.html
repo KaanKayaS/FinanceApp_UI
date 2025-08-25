@@ -78,7 +78,7 @@
             <select id="card" formControlName="creditCardId" required class="form-select">
               <option value="">Kart seçiniz...</option>
               <option *ngFor="let card of creditCards" [value]="card.cardId">
-                {{ maskCardNumber(card.cardNo) }} - {{ card.nameOnCard }}
+                {{ maskCardNumber(card.cardNo) }} - {{ card.nameOnCard }} (Bakiye: ₺{{ card.balance | number:'1.2-2' }})
               </option>
             </select>
           </div>
@@ -99,13 +99,44 @@
             </div>
           </div>
 
+          <!-- Selected Card Info -->
+          <div class="card-info-section" *ngIf="getSelectedCard() && planPrice !== null">
+            <div class="selected-card-info">
+              <h4>Seçilen Kart Bilgileri</h4>
+              <p><strong>Kart:</strong> {{ maskCardNumber(getSelectedCard()!.cardNo) }}</p>
+              <p><strong>Kart Sahibi:</strong> {{ getSelectedCard()!.nameOnCard }}</p>
+              <p><strong>Mevcut Bakiye:</strong> ₺{{ getSelectedCard()!.balance | number:'1.2-2' }}</p>
+              <p><strong>Plan Ücreti:</strong> ₺{{ planPrice | number:'1.2-2' }}</p>
+              
+              <!-- Insufficient Funds Warning -->
+              <div class="insufficient-funds-warning" *ngIf="hasInsufficientFunds()">
+                <div class="warning-content">
+                  <i class="material-icons">warning</i>
+                  <div>
+                    <h5>Yetersiz Bakiye!</h5>
+                    <p>Seçilen kartın bakiyesi plan ücreti için yeterli değil.</p>
+                    <p>Eksik tutar: ₺{{ (planPrice - getSelectedCard()!.balance) | number:'1.2-2' }}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Sufficient Funds Info -->
+              <div class="sufficient-funds-info" *ngIf="!hasInsufficientFunds()">
+                <div class="success-content">
+                  <i class="material-icons">check_circle</i>
+                  <p>Bakiye plan ücreti için yeterli!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </form>
       </div>
 
       <div class="card-actions">
         <button type="button" 
                 (click)="onSubmit()"
-                [disabled]="!membershipForm.valid || isLoading"
+                [disabled]="!membershipForm.valid || isLoading || hasInsufficientFunds()"
                 class="btn-primary">
           {{ isLoading ? 'Oluşturuluyor...' : 'Abonelik Oluştur' }}
         </button>

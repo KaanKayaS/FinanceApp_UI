@@ -1,0 +1,184 @@
+<div class="create-investment-plan-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="back-button" (click)="goHome()">
+      <span class="material-icons">arrow_back</span>
+    </div>
+    <h1 class="page-title">
+      <span class="material-icons">savings</span>
+      Yatırım Planı Oluştur
+    </h1>
+  </div>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <div class="form-card">
+      <form [formGroup]="investmentForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Plan Adı -->
+        <div class="form-group">
+          <label for="name" class="form-label">
+            <span class="material-icons">label</span>
+            Plan Adı *
+          </label>
+          <input 
+            type="text" 
+            id="name"
+            formControlName="name"
+            class="form-input"
+            placeholder="Örn: Araba almak için birikim planı"
+            maxlength="25"
+            [class.error]="investmentForm.get('name')?.invalid && investmentForm.get('name')?.touched"
+          />
+          <div 
+            class="error-message" 
+            *ngIf="investmentForm.get('name')?.invalid && investmentForm.get('name')?.touched"
+          >
+            <span class="material-icons">error</span>
+            <span *ngIf="investmentForm.get('name')?.errors?.['required']">Plan adı boş olamaz.</span>
+            <span *ngIf="investmentForm.get('name')?.errors?.['maxlength']">Plan adı en fazla 25 karakter olabilir.</span>
+          </div>
+        </div>
+
+        <!-- Açıklama -->
+        <div class="form-group">
+          <label for="description" class="form-label">
+            <span class="material-icons">description</span>
+            Açıklama (İsteğe bağlı)
+          </label>
+          <textarea 
+            id="description"
+            formControlName="description"
+            class="form-textarea"
+            placeholder="Plan hakkında detaylı bilgi verebilirsiniz..."
+            rows="3"
+            maxlength="60"
+            [class.error]="investmentForm.get('description')?.invalid && investmentForm.get('description')?.touched"
+          ></textarea>
+          <div 
+            class="error-message" 
+            *ngIf="investmentForm.get('description')?.invalid && investmentForm.get('description')?.touched"
+          >
+            <span class="material-icons">error</span>
+            <span *ngIf="investmentForm.get('description')?.errors?.['maxlength']">Açıklama en fazla 60 karakter olabilir.</span>
+          </div>
+        </div>
+
+        <!-- Hedef Tutar -->
+        <div class="form-group">
+          <label for="targetPrice" class="form-label">
+            <span class="material-icons">monetization_on</span>
+            Hedef Tutar (₺) *
+          </label>
+          <input 
+            type="text" 
+            id="targetPrice"
+            placeholder="Tutarı girin"
+            class="form-input"
+            (input)="onTargetPriceInput($event)"
+            (focus)="onTargetPriceFocus($event)"
+            (blur)="onTargetPriceBlur($event)"
+            [class.error]="investmentForm.get('targetPrice')?.invalid && investmentForm.get('targetPrice')?.touched"
+          />
+          <div 
+            class="error-message" 
+            *ngIf="investmentForm.get('targetPrice')?.invalid && investmentForm.get('targetPrice')?.touched"
+          >
+            <span class="material-icons">error</span>
+            <span *ngIf="investmentForm.get('targetPrice')?.errors?.['max']">Hedef tutar 100.000.000'dan büyük olmamalıdır.</span>
+            <span *ngIf="investmentForm.get('targetPrice')?.errors?.['min']">Hedef tutar 2000'den büyük olmalıdır.</span>
+            <span *ngIf="investmentForm.get('targetPrice')?.errors?.['required']">Hedef tutar zorunludur</span>
+          </div>
+        </div>
+
+        <!-- Hedef Tarih -->
+        <div class="form-group">
+          <label for="targetDate" class="form-label">
+            <span class="material-icons">event</span>
+            Hedef Tarih *
+          </label>
+          <input 
+            type="date" 
+            id="targetDate"
+            formControlName="targetDate"
+            class="form-input"
+            [class.error]="investmentForm.get('targetDate')?.invalid && investmentForm.get('targetDate')?.touched"
+          />
+          <div 
+            class="error-message" 
+            *ngIf="investmentForm.get('targetDate')?.invalid && investmentForm.get('targetDate')?.touched"
+          >
+            <span class="material-icons">error</span>
+            <span *ngIf="investmentForm.get('targetDate')?.errors?.['required']">Hedef tarih seçiniz</span>
+            <span *ngIf="investmentForm.get('targetDate')?.errors?.['atLeastOneWeek']">Hedef tarih bugünden en az 7 gün sonrası olmalıdır.</span>
+          </div>
+        </div>
+
+        <!-- Kategori -->
+        <div class="form-group">
+          <label class="form-label">
+            <span class="material-icons">category</span>
+            Kategori *
+          </label>
+          <div class="selection-grid">
+            <div 
+              *ngFor="let category of investmentCategories; trackBy: trackByCategoryValue"
+              class="selection-item"
+              [class.selected]="investmentForm.get('investmentCategory')?.value == category.value"
+              (click)="investmentForm.patchValue({investmentCategory: category.value})"
+            >
+              <span class="material-icons">{{ category.icon }}</span>
+              <span class="selection-label">{{ category.label }}</span>
+            </div>
+          </div>
+          <div 
+            class="error-message" 
+            *ngIf="investmentForm.get('investmentCategory')?.invalid && investmentForm.get('investmentCategory')?.touched"
+          >
+            <span class="material-icons">error</span>
+            Kategori seçiniz
+          </div>
+        </div>
+
+        <!-- Frekans -->
+        <div class="form-group">
+          <label class="form-label">
+            <span class="material-icons">schedule</span>
+            Yatırım Frekansı *
+          </label>
+          <div class="frequency-grid">
+            <div 
+              *ngFor="let frequency of investmentFrequencies; trackBy: trackByFrequencyValue"
+              class="frequency-item"
+              [class.selected]="investmentForm.get('investmentFrequency')?.value == frequency.value"
+              (click)="investmentForm.patchValue({investmentFrequency: frequency.value})"
+            >
+              <span class="material-icons">{{ frequency.icon }}</span>
+              <span class="frequency-label">{{ frequency.label }}</span>
+            </div>
+          </div>
+          <div 
+            class="error-message" 
+            *ngIf="investmentForm.get('investmentFrequency')?.invalid && investmentForm.get('investmentFrequency')?.touched"
+          >
+            <span class="material-icons">error</span>
+            Frekans seçiniz
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="submit-button"
+            [disabled]="isLoading"
+          >
+            <span class="material-icons" *ngIf="!isLoading">savings</span>
+            <span class="material-icons spinning" *ngIf="isLoading">refresh</span>
+            {{ isLoading ? 'Oluşturuluyor...' : 'Yatırım Planı Oluştur' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

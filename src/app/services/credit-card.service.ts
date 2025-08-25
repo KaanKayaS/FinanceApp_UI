@@ -36,8 +36,12 @@ export class CreditCardService {
     });
   }
 
-  addBalance(cardId: number, balance: number): Observable<{message: string, success: boolean}> {
-    return this.http.put<{message: string, success: boolean}>(`${this.baseUrl}/CreditCard/AddBalance?id=${cardId}&balance=${balance}`, null);
+  addBalance(cardId: number, balance: number, addBalanceCategory: number, name?: string): Observable<string> {
+    let url = `${this.baseUrl}/CreditCard/AddBalance?id=${cardId}&balance=${balance}&addbalanceCategory=${addBalanceCategory}`;
+    if (name && name.trim()) {
+      url += `&name=${encodeURIComponent(name)}`;
+    }
+    return this.http.put(url, null, { responseType: 'text' });
   }
 
   createCreditCard(cardData: {

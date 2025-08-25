@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
+import { InstructionService } from '../../../services/instruction.service';
 
 interface CreateInstructionRequest {
   title: string;
@@ -35,14 +35,14 @@ export class CreateInstructionComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private instructionService: InstructionService,
     private router: Router
   ) {
     this.instructionForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      amount: ['', [Validators.required, Validators.min(0.01)]],
-      scheduledDate: ['', [Validators.required]],
-      description: [''], // İsteğe bağlı
+      title: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(20)]],
+      amount: ['', [Validators.required, Validators.min(0.01), Validators.max(1000000)]],
+      scheduledDate: ['', [Validators.required, this.futureDateValidator]],
+      description: ['', [Validators.minLength(4), Validators.maxLength(50)]], // İsteğe bağlı ama doldurulursa 4-50 karakter
       monthlyInstruction: [false], // Aylık talimat checkbox'ı
       instructionTime: [1, [Validators.min(1), Validators.max(12)]] // Talimat sayısı, maksimum 12 ay
     });
@@ -77,12 +77,7 @@ export class CreateInstructionComponent implements OnInit {
 
       console.log('Gönderilen talimat verisi:', instructionData);
 
-      this.http.post('http://localhost:5055/api/Instruction/CreateInstruction', instructionData, {
-        responseType: 'text',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      this.instructionService.createInstruction(instructionData)
         .pipe(
           finalize(() => {
             this.isSubmitting = false;
@@ -122,26 +117,53 @@ export class CreateInstructionComponent implements OnInit {
   private handleError(error: any) {
     this.clearMessages();
     
-    if (error.status === 500 || error.status === 400 || error.status === 422) {
+    console.error('Full error object:', error);
+    
+    // CORS veya network hatası
+    if (error.status === 0) {
+      this.errorMessage = 'Sunucuya bağlanılamadı. CORS hatası olabilir veya sunucu çalışmıyor olabilir.';
+      this.errorMessages = ['API URL: ' + error.url || 'Bilinmiyor'];
+    }
+    // Server hatası
+    else if (error.status === 500 || error.status === 400 || error.status === 422) {
       try {
-        const errorResponse: ErrorResponse = JSON.parse(error.error);
-        if (errorResponse.Errors && errorResponse.Errors.length > 0) {
-          this.errorMessages = errorResponse.Errors;
+        // String olarak gelen hata mesajını kontrol et
+        if (typeof error.error === 'string') {
+          try {
+            const errorResponse: ErrorResponse = JSON.parse(error.error);
+            if (errorResponse.Errors && errorResponse.Errors.length > 0) {
+              this.errorMessages = errorResponse.Errors;
+              this.errorMessage = 'Aşağıdaki hatalar oluştu:';
+            } else {
+              this.errorMessage = 'Talimat oluşturulurken bir hata oluştu.';
+            }
+          } catch (parseError) {
+            // JSON parse edilemezse raw string'i göster
+            this.errorMessage = 'Sunucu hatası: ' + error.error;
+          }
+        } else if (error.error && error.error.Errors) {
+          this.errorMessages = error.error.Errors;
           this.errorMessage = 'Aşağıdaki hatalar oluştu:';
         } else {
-          this.errorMessage = 'Talimat oluşturulurken bir hata oluştu.';
+          this.errorMessage = `HTTP ${error.status}: ${error.statusText || 'Bilinmeyen hata'}`;
         }
       } catch (e) {
-        this.errorMessage = 'Talimat oluşturulurken bir hata oluştu.';
+        this.errorMessage = `HTTP ${error.status}: Sunucu hatası`;
       }
-    } else {
-      this.errorMessage = 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.';
+    }
+    // Diğer HTTP hataları
+    else if (error.status) {
+      this.errorMessage = `HTTP ${error.status}: ${error.statusText || 'Bilinmeyen hata'}`;
+    }
+    // Genel hata
+    else {
+      this.errorMessage = 'Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.';
     }
 
-    // Hata mesajını 5 saniye sonra temizle
+    // Hata mesajını 8 saniye sonra temizle
     setTimeout(() => {
       this.clearMessages();
-    }, 5000);
+    }, 8000);
   }
 
   resetForm() {
@@ -158,6 +180,57 @@ export class CreateInstructionComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
     this.errorMessages = [];
+  }
+
+  // Gelecek tarih validator'ı
+  futureDateValidator(control: any) {
+    if (!control.value) return null;
+    
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Bugünün başlangıcı
+    selectedDate.setHours(0, 0, 0, 0); // Seçilen tarihin başlangıcı
+    
+    return selectedDate > today ? null : { futureDate: true };
+  }
+
+  // Para maskelemesi fonksiyonları
+  onAmountInput(event: any): void {
+    const input = event.target;
+    let value = input.value.replace(/[^\d]/g, ''); // Sadece rakamları al
+    
+    if (value === '') {
+      this.instructionForm.patchValue({ amount: '' });
+      return;
+    }
+    
+    // Sayısal değeri form'a kaydet
+    const numericValue = parseInt(value);
+    this.instructionForm.patchValue({ amount: numericValue });
+    
+    // Binlik ayırıcı ile formatla ve input'a yaz
+    input.value = this.formatCurrency(numericValue);
+  }
+
+  formatCurrency(value: number): string {
+    // Türkiye formatında binlik ayırıcı (nokta) kullan
+    return value.toLocaleString('tr-TR');
+  }
+
+  onAmountFocus(event: any): void {
+    const input = event.target;
+    // Focus edildiğinde sadece rakamları göster
+    if (this.instructionForm.get('amount')?.value) {
+      input.value = this.instructionForm.get('amount')?.value.toString();
+    }
+  }
+
+  onAmountBlur(event: any): void {
+    const input = event.target;
+    // Blur olduğunda formatlanmış halini göster
+    if (this.instructionForm.get('amount')?.value) {
+      input.value = this.formatCurrency(this.instructionForm.get('amount')?.value);
+    }
   }
 
   private markFormGroupTouched() {

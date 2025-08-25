@@ -1,0 +1,523 @@
+.investment-list-container {
+  min-height: calc(100vh - 64px);
+  background-color: #f8f9fa;
+  padding: 24px;
+
+  .header-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 16px;
+
+    .back-button {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        background: #4f46e5;
+        border-color: #4f46e5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+
+        .material-icons {
+          color: white;
+        }
+      }
+
+      .material-icons {
+        color: #4f46e5;
+        font-size: 24px;
+        transition: color 0.3s ease;
+      }
+    }
+
+    .page-title {
+      color: #2c3e50;
+      font-size: 32px;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+
+      .material-icons {
+        color: #4f46e5;
+        font-size: 36px;
+      }
+    }
+
+    .header-actions {
+      .create-button {
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+          background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .material-icons {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .loading-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #6c757d;
+
+    .loading-spinner {
+      margin-bottom: 16px;
+
+      .material-icons {
+        font-size: 48px;
+        color: #4f46e5;
+
+        &.spinning {
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+
+    p {
+      font-size: 18px;
+      margin: 0;
+    }
+  }
+
+  .plans-container {
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      text-align: center;
+      color: #6c757d;
+
+      .material-icons {
+        font-size: 80px;
+        color: #e2e8f0;
+        margin-bottom: 24px;
+      }
+
+      h3 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin: 0 0 12px 0;
+        font-weight: 600;
+      }
+
+      p {
+        font-size: 16px;
+        margin: 0 0 32px 0;
+        max-width: 400px;
+      }
+
+      .create-first-plan-button {
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+          background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .material-icons {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 24px;
+
+      .plan-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        &.completed {
+          border-color: #10b981;
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 20px;
+
+          .category-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+
+            .category-icon {
+              background: rgba(79, 70, 229, 0.1);
+              border-radius: 12px;
+              width: 48px;
+              height: 48px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .material-icons {
+                color: #4f46e5;
+                font-size: 24px;
+              }
+            }
+
+            .plan-info {
+              flex: 1;
+
+              .plan-name {
+                color: #2c3e50;
+                font-size: 18px;
+                font-weight: 600;
+                margin: 0 0 4px 0;
+                line-height: 1.2;
+              }
+
+              .category-label {
+                color: #6c757d;
+                font-size: 14px;
+                font-weight: 500;
+              }
+            }
+          }
+
+          .plan-status {
+            .status-badge {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              padding: 6px 12px;
+              border-radius: 20px;
+              font-size: 12px;
+              font-weight: 600;
+
+              &.active {
+                background: rgba(79, 70, 229, 0.1);
+                color: #4f46e5;
+              }
+
+              &.completed {
+                background: rgba(16, 185, 129, 0.1);
+                color: #10b981;
+              }
+
+              .material-icons {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+
+        .progress-section {
+          margin-bottom: 20px;
+
+          .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+
+            .amounts {
+              .current-amount {
+                color: #2c3e50;
+                font-size: 18px;
+                font-weight: 700;
+              }
+
+              .target-amount {
+                color: #6c757d;
+                font-size: 16px;
+                font-weight: 500;
+              }
+            }
+
+            .progress-percentage {
+              color: #4f46e5;
+              font-size: 16px;
+              font-weight: 700;
+            }
+          }
+
+          .progress-bar {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+
+            .progress-fill {
+              height: 100%;
+              border-radius: 10px;
+              transition: width 0.5s ease;
+
+              &.success {
+                background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+              }
+
+              &.info {
+                background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+              }
+
+              &.warning {
+                background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+              }
+
+              &.danger {
+                background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+              }
+            }
+          }
+        }
+
+        .details-section {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 12px;
+          margin-bottom: 20px;
+
+          .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+
+            .material-icons {
+              color: #4f46e5;
+              font-size: 16px;
+            }
+
+            .detail-label {
+              color: #6c757d;
+              font-size: 13px;
+              font-weight: 500;
+              min-width: 50px;
+            }
+
+            .detail-value {
+              color: #2c3e50;
+              font-size: 13px;
+              font-weight: 600;
+              flex: 1;
+
+              &.success {
+                color: #10b981;
+              }
+
+              &.warning {
+                color: #f59e0b;
+              }
+
+              &.danger {
+                color: #ef4444;
+              }
+            }
+          }
+        }
+
+        .description-section {
+          margin-bottom: 20px;
+
+          .description {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            font-style: italic;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #4f46e5;
+          }
+        }
+
+        .actions-section {
+          display: flex;
+          gap: 12px;
+
+          .action-button {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+
+            &.primary {
+              background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+              color: white;
+
+              &:hover:not(:disabled) {
+                background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+              }
+            }
+
+            &.secondary {
+              background: white;
+              color: #dc2626;
+              border: 2px solid #dc2626;
+
+              &:hover:not(:disabled) {
+                background: #dc2626;
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+              }
+            }
+
+            &.refund {
+              background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+              color: white;
+              border: none;
+
+              &:hover:not(:disabled) {
+                background: linear-gradient(135deg, #047857 0%, #059669 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+              }
+
+              .material-icons {
+                font-size: 18px;
+              }
+            }
+
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+              transform: none;
+            }
+
+            .material-icons {
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .investment-list-container {
+    padding: 16px;
+
+    .header-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+
+      .page-title {
+        font-size: 24px;
+
+        .material-icons {
+          font-size: 28px;
+        }
+      }
+
+      .header-actions {
+        align-self: stretch;
+
+        .create-button {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
+
+    .plans-container {
+      .plans-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+
+        .plan-card {
+          padding: 20px;
+
+          .details-section {
+            grid-template-columns: 1fr;
+            gap: 8px;
+          }
+
+          .actions-section {
+            flex-direction: column;
+
+            .action-button {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animation
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} 

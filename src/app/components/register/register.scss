@@ -202,6 +202,37 @@
   }
 }
 
+.success-message {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+
+  .success-icon {
+    font-size: 24px;
+    color: #16a34a;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .success-text {
+    color: #166534;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .redirect-info {
+    color: #059669;
+    font-size: 0.875rem;
+    font-style: italic;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
