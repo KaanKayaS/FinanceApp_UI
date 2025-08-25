@@ -1,4 +1,5 @@
 # 💰 FinStats - Kişisel Finans Yönetim Sistemi
+https://finstats.net
 
 FinStats, modern teknoloji ile güvenli ve kolay finans yönetimi sunan kapsamlı bir kişisel finansal yönetim uygulamasıdır. Angular 17 ile geliştirilmiş bu uygulama, kullanıcıların finansal hedeflerine ulaşmalarına yardımcı olmak için tasarlanmıştır.
 
