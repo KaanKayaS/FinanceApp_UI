@@ -151,27 +151,6 @@ ng build --configuration production
 ng build
 ```
 
-### Test
-```bash
-# Unit testleri çalıştır
-ng test
-
-# E2E testleri çalıştır
-ng e2e
-```
-
-### Code Generation
-```bash
-# Yeni component oluştur
-ng generate component component-name
-
-# Yeni service oluştur
-ng generate service service-name
-
-# Yeni module oluştur
-ng generate module module-name
-```
-
 ## 🌐 API Entegrasyonu
 
 Uygulama, RESTful API ile iletişim kurar:
@@ -244,32 +223,10 @@ export const environment = {
 };
 ```
 
-## 🤝 Katkıda Bulunma
-
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
-
-## 📝 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
-
 ## 📞 İletişim & Destek
 
-- **Email:** support@finstats.net
+- **Email:** finstatsapp@gmail.com
 - **Website:** https://finstats.net
-- **Documentation:** [Dokümantasyon](docs/)
-
-## 🏆 Özellikler Roadmap
-
-- [ ] **Mobil uygulama** (React Native/Flutter)
-- [ ] **Çoklu dil** desteği
-- [ ] **Advanced AI** finansal danışman
-- [ ] **Cryptocurrency** entegrasyonu
-- [ ] **Social trading** özellikleri
-- [ ] **Banka API** entegrasyonları
 
 ---
 
